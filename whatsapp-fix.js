@@ -292,38 +292,56 @@ let lastTappedProductId = null;
         document.querySelectorAll('.wish-inline-btn').forEach(btn => btn.style.touchAction = 'manipulation');
     }, 300);
 })();
-
-// script.js না ছুঁয়েই কার্ডে Love বাটন বসানো এবং Add to Cart সরিয়ে শুধু Order Now রাখা
+// কার্ডে স্পষ্ট লাল হার্ট (♥) এবং Order Now বাটন নিশ্চিত করা
 setInterval(function () {
     document.querySelectorAll('.product-card').forEach(card => {
-        // ১. Add to Cart বাটনটি লুকিয়ে শুধু Order Now রাখা
+        const infoBox = card.querySelector('.product-info');
+        const priceRow = card.querySelector('.price-row');
+        if (!infoBox || !priceRow) return;
+
+        // প্রোডাক্ট আইডি খুঁজে বের করা
+        let prodId = null;
+        const anyBtn = card.querySelector('[onclick]');
+        if (anyBtn) {
+            const m = anyBtn.getAttribute('onclick').match(/\d+/);
+            if (m) prodId = parseInt(m);
+        }
+        if (!prodId) return;
+
+        // ১. Add to Cart বাটন থাকলে লুকিয়ে রাখা
         const cartBtn = card.querySelector('.btn-cart');
         if (cartBtn) cartBtn.style.display = 'none';
 
-        // ২. দামের পাশে Love (🤍/❤️) বাটন না থাকলে অটোমেটিক বসিয়ে দেওয়া
-        const priceRow = card.querySelector('.price-row');
-        const orderBtn = card.querySelector('.btn-order');
-
-        if (priceRow && orderBtn && !priceRow.querySelector('.wish-inline-btn')) {
-            const match = orderBtn.getAttribute('onclick').match(/\d+/);
-            if (match) {
-                const prodId = parseInt(match[0]);
-                priceRow.style.justifyContent = 'space-between';
-                priceRow.style.alignItems = 'center';
-                priceRow.style.width = '100%';
-
-                const wishList = JSON.parse(localStorage.getItem('luvella_wish')) || [];
-                const isWished = wishList.some(w => w.id === prodId);
-
-                const loveBtn = document.createElement('button');
-                loveBtn.className = 'wish-inline-btn' + (isWished ? ' wished' : '');
-                loveBtn.innerHTML = isWished ? '❤️' : '🤍';
-                loveBtn.title = '১ ক্লিকে Wishlist | ৪ ক্লিকে Link Copy';
-                loveBtn.style.touchAction = 'manipulation';
-                loveBtn.setAttribute('onclick', `toggleWishlist(${prodId})`);
-
-                priceRow.appendChild(loveBtn);
-            }
+        // ২. Order Now বাটন না থাকলে তৈরি করে নিচে বসানো
+        let btnWrap = card.querySelector('.card-buttons');
+        if (!btnWrap) {
+            btnWrap = document.createElement('div');
+            btnWrap.className = 'card-buttons';
+            infoBox.appendChild(btnWrap);
         }
+        if (!btnWrap.querySelector('.btn-order')) {
+            btnWrap.innerHTML = `<button class="btn-order" onclick="openSingleOrder(${prodId})">Order Now</button>`;
+        }
+
+        // ৩. দামের পাশে স্পষ্ট হার্ট (♥) বাটন বসানো
+        priceRow.style.justifyContent = 'space-between';
+        priceRow.style.alignItems = 'center';
+        priceRow.style.width = '100%';
+
+        const wishList = JSON.parse(localStorage.getItem('luvella_wish')) || [];
+        const isWished = wishList.some(w => w.id === prodId);
+
+        let loveBtn = priceRow.querySelector('.wish-inline-btn');
+        if (!loveBtn) {
+            loveBtn = document.createElement('button');
+            loveBtn.className = 'wish-inline-btn';
+            loveBtn.style.touchAction = 'manipulation';
+            loveBtn.setAttribute('onclick', `toggleWishlist(${prodId})`);
+            priceRow.appendChild(loveBtn);
+        }
+        loveBtn.innerHTML = isWished ? '❤️' : '♡';
+        loveBtn.style.color = '#8B1E41';
+        loveBtn.style.fontSize = '16px';
+        loveBtn.style.fontWeight = 'bold';
     });
 }, 300);
