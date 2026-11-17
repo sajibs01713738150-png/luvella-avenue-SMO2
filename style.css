@@ -1236,3 +1236,22 @@ html, body {
     padding-top: 16px !important;
     padding-bottom: 18px !important;
 }
+/* Save % ব্যাজ আরও বামে এবং Love ও Link আইকন আরও ডানে সরানো */
+.discount-badge {
+    top: 6px !important;
+    left: 6px !important;
+    padding: 2px 7px !important;
+    font-size: 10px !important;
+}
+
+.card-top-actions {
+    top: 6px !important;
+    right: 5px !important;
+    gap: 4px !important;
+}
+
+.card-icon-btn {
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 12px !important;
+}
