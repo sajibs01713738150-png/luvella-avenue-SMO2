@@ -42,12 +42,12 @@ function renderProducts(list) {
         card.innerHTML = `
             ${discountPercent > 0 ? `<span class="discount-badge">Save ${discountPercent}%</span>` : ''}
             
-            <div class="card-top-actions">
+                        <div class="card-top-actions">
                 <button class="card-icon-btn ${isWished}" onclick="toggleWishlist(${item.id})" title="Wishlist">
-                    <i class="${isWished ? 'fas' : 'far'} fa-heart"></i>
+                    ${isWished ? '❤️' : '🤍'}
                 </button>
-                <button class="card-icon-btn" onclick="copyProductLink(${item.id})" title="প্রোডাক্ট লিংক কপি করুন">
-                    <i class="fas fa-link"></i>
+                <button class="card-icon-btn" onclick="copyProductLink(${item.id})" title="লিংক কপি করুন">
+                    🔗
                 </button>
             </div>
 
@@ -315,19 +315,18 @@ function confirmOrder() {
     openModal('receiptModal');
 }
 
-  function orderViaWhatsApp(waNumber) {
-    const name = document.getElementById('custName').value.trim() || 'কাস্টমার';
-    const phone = document.getElementById('custPhone').value.trim() || 'দেওয়া হয়নি';
-    const address = document.getElementById('custAddress').value.trim() || 'দেওয়া হয়নি';
+function orderViaWhatsApp(waNumber) {
+    const name = document.getElementById('custName').value.trim() || 'Customer';
+    const phone = document.getElementById('custPhone').value.trim() || 'N/A';
+    const address = document.getElementById('custAddress').value.trim() || 'N/A';
     const payment = document.getElementById('paymentMethod').value;
 
-    let itemText = currentOrderItems.map(i => `${i.name} (${i.qty}টি - ${i.price * i.qty}৳)`).join(', ');
+    let itemText = currentOrderItems.map(i => `${i.name} (${i.qty} pcs - ${i.price * i.qty} TK)`).join(', ');
     let total = currentOrderItems.reduce((sum, i) => sum + (i.price * i.qty), 0);
 
-    const message = `আসসালামু আলাইকুম Luvella Avenue,\nআমি একটি অর্ডার করতে চাই:\n\nপ্রোডাক্ট: ${itemText}\nমোট বিল: ${total}৳\nপেমেন্ট: ${payment}\n\nনাম: ${name}\nমোবাইল: ${phone}\nঠিকানা: ${address}`;
+    const message = `Assalamu Alaikum Luvella Avenue,\nI want to order:\n\nProduct: ${itemText}\nTotal: ${total} TK\nPayment: ${payment}\n\nName: ${name}\nPhone: ${phone}\nAddress: ${address}`;
     
-    const waUrl = `https://whatsapp.com{waNumber}&text=${encodeURIComponent(message)}`;
-    window.open(waUrl, '_blank');
+    window.open(`https://wa.me{waNumber}?text=${encodeURIComponent(message)}`, '_blank');
 }
 
 
