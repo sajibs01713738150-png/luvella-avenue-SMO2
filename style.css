@@ -1198,3 +1198,28 @@ html, body {
     cursor: pointer;
     user-select: none;
 }
+/* প্রোডাক্ট কার্ড আরও ছোট ও স্লিম করা */
+.product-img-wrap {
+    aspect-ratio: 4 / 2.9 !important;
+}
+
+.product-info {
+    padding: 6px 8px !important;
+}
+
+.product-cat-tag {
+    font-size: 10px !important;
+}
+
+.product-title {
+    font-size: 12px !important;
+}
+
+.current-price {
+    font-size: 14px !important;
+}
+
+.btn-cart, .btn-order {
+    padding: 4px 6px !important;
+    font-size: 11px !important;
+}

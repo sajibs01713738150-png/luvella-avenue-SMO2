@@ -92,3 +92,68 @@ window.addEventListener('click', function (event) {
         event.target.classList.remove('show');
     }
 });
+// রিভিউ না থাকলে কোনো খালি লেখা দেখাবে না
+function renderReviews() {
+    const reviewList = document.getElementById('reviewList');
+    if (!reviewList) return;
+
+    let reviews = JSON.parse(localStorage.getItem('luvella_reviews')) || [];
+    const visibleReviews = isAdminReviewMode ? reviews : reviews.filter(r => !r.hidden);
+
+    if (visibleReviews.length === 0) {
+        reviewList.innerHTML = '';
+        reviewList.style.marginBottom = '0';
+        return;
+    }
+
+    reviewList.style.marginBottom = '15px';
+    reviewList.innerHTML = visibleReviews.map(r => `
+        <div class="review-card" style="padding: 10px; opacity: ${r.hidden ? '0.5' : '1'};">
+            <div class="stars" style="font-size: 13px;">
+                ★★★★★ (${r.rating}) <span style="color:green; font-size:11px;">✔ Verified Buyer</span>
+                ${r.hidden ? '<span style="color:red; font-size:11px;"> [Hidden]</span>' : ''}
+            </div>
+            <p style="font-size: 13px; margin: 5px 0;">"${r.text}"</p>
+            ${r.image ? `<img src="${r.image}" alt="Review Photo" onclick="openZoomImage('${r.image}')" style="width: 65px; height: 65px; object-fit: cover; border-radius: 6px; margin: 5px 0; cursor: zoom-in; border: 1px solid #ddd;">` : ''}
+            <h4 style="font-size: 12px;">- ${r.name}</h4>
+            ${isAdminReviewMode ? `
+                <div style="margin-top: 6px; display: flex; gap: 5px;">
+                    <button onclick="toggleHideReview(${r.id})" style="background:#f59e0b; color:#fff; border:none; padding:3px 7px; border-radius:4px; font-size:11px; cursor:pointer;">
+                        ${r.hidden ? '👁️ Show করুন' : '🙈 Hide করুন'}
+                    </button>
+                    <button onclick="deleteReview(${r.id})" style="background:#e11d48; color:#fff; border:none; padding:3px 7px; border-radius:4px; font-size:11px; cursor:pointer;">
+                        🗑️ মুছুন
+                    </button>
+                </div>
+            ` : ''}
+        </div>
+    `).join('');
+}
+
+// ফোনে ও ল্যাপটপে ৩ ট্যাপ করলে নিশ্চিতভাবে অ্যাডমিন পাসওয়ার্ড চাইবে
+(function setupAdminFooterTap() {
+    const footer = document.querySelector('.footer');
+    if (!footer) return;
+    footer.style.touchAction = 'manipulation'; // ফোনের ডাবল-ট্যাপ জুম বন্ধ করবে
+    let tapCount = 0;
+    let tapTimer = null;
+
+    footer.addEventListener('click', function () {
+        tapCount++;
+        clearTimeout(tapTimer);
+        tapTimer = setTimeout(() => { tapCount = 0; }, 1200);
+
+        if (tapCount >= 3) {
+            tapCount = 0;
+            const pass = prompt('অ্যাডমিন পাসওয়ার্ড দিন (1234):');
+            if (pass === '1234') {
+                isAdminReviewMode = !isAdminReviewMode;
+                renderReviews();
+                alert(isAdminReviewMode ? 'অ্যাডমিন মোড চালু হয়েছে!' : 'অ্যাডমিন মোড বন্ধ হয়েছে।');
+            } else if (pass !== null) {
+                alert('ভুল পাসওয়ার্ড!');
+            }
+        }
+    });
+    renderReviews();
+})();
