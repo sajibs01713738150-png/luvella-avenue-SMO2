@@ -157,3 +157,39 @@ function renderReviews() {
     });
     renderReviews();
 })();
+// ফোনের Back বাটন চাপলে ওয়েবসাইট থেকে বের না হয়ে শুধু খোলা পপআপ বন্ধ হবে
+(function fixMobileBackButton() {
+    const originalOpenModal = window.openModal;
+    const originalCloseModal = window.closeModal;
+
+    // পপআপ খোলার সময় ব্রাউজার হিস্ট্রিতে একটি ধাপ যুক্ত করা
+    window.openModal = function (modalId) {
+        if (typeof originalOpenModal === 'function') {
+            originalOpenModal(modalId);
+        } else {
+            const m = document.getElementById(modalId);
+            if (m) m.classList.add('show');
+        }
+        history.pushState({ modalOpen: true }, "");
+    };
+
+    // ক্রস (×) বাটনে চাপ দিয়ে পপআপ বন্ধ করলে হিস্ট্রি সমন্বয় করা
+    window.closeModal = function (modalId) {
+        if (typeof originalCloseModal === 'function') {
+            originalCloseModal(modalId);
+        } else {
+            const m = document.getElementById(modalId);
+            if (m) m.classList.remove('show');
+        }
+        if (history.state && history.state.modalOpen) {
+            history.back();
+        }
+    };
+
+    // ফোনের হার্ডওয়্যার বা ব্রাউজার Back বাটন চাপলে পপআপ বন্ধ করা
+    window.addEventListener('popstate', function () {
+        document.querySelectorAll('.modal.show').forEach(modal => {
+            modal.classList.remove('show');
+        });
+    });
+})();
