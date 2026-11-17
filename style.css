@@ -1274,4 +1274,32 @@ background-clip: text;
     border: 1.5px solid #FFFFFF;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
+/* ১. Order Now বাটন ফিরিয়ে আনা ও সাদা লাভ আইকন লাল করা */
+.btn-order {
+    display: block !important;
+    width: 100% !important;
+}
+
+.wish-inline-btn {
+    color: #8B1E41 !important;
+    font-size: 14px !important;
+}
+
+/* ২. ল্যাপটপে সার্চ বারকে লোগোর নিচে নামানো (আগের মতো) */
+@media (min-width: 768px) {
+    .header .container {
+        display: block !important;
+    }
+    .header-top {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+    .search-container {
+        width: 100% !important;
+        margin-top: 12px !important;
+        display: block !important;
+    }
+}
 
