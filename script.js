@@ -59,17 +59,16 @@ function renderProducts(list) {
                 <span class="product-cat-tag">${item.isSpecialOffer ? 'স্পেশাল অফার' : item.category}</span>
                 <h3 class="product-title">${item.name}</h3>
                 <div class="product-rating">★ ${item.rating}</div>
-                
-                <div class="price-row">
-                    <span class="current-price">${item.price}৳</span>
-                    ${item.oldPrice ? `<span class="old-price">${item.oldPrice}৳</span>` : ''}
+                              <div class="price-row" style="justify-content: space-between; align-items: center; width: 100%;">
+                    <div>
+                        <span class="current-price">${item.price}৳</span>
+                        ${item.oldPrice ? `<span class="old-price">${item.oldPrice}৳</span>` : ''}
+                    </div>
+                    <button class="wish-inline-btn ${isWished}" onclick="toggleWishlist(${item.id})" title="১ ক্লিকে Wishlist | ৪ ক্লিকে Link Copy">
+                        ${isWished ? '❤️' : '🤍'}
+                    </button>
                 </div>
 
-                <div class="card-buttons">
-                    <button class="btn-cart" onclick="addToCart(${item.id})">Add to Cart</button>
-                    <button class="btn-order" onclick="openSingleOrder(${item.id})">Order Now</button>
-                </div>
-            </div>
         `;
         grid.appendChild(card);
     });

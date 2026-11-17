@@ -1259,3 +1259,19 @@ background-clip: text;
     height: 26px !important;
     font-size: 12px !important;
 }
+/* হেডারের Love ও Cart আইকনের ওপরের সংখ্যা (Badge) সুন্দরভাবে বসানো */
+.icon-btn {
+    position: relative !important;
+    padding: 6px 8px !important;
+}
+
+.icon-btn .badge {
+    top: -4px !important;
+    right: -2px !important;
+    width: 17px !important;
+    height: 17px !important;
+    font-size: 10px !important;
+    border: 1.5px solid #FFFFFF;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
