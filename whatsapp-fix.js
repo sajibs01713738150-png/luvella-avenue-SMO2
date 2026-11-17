@@ -1,3 +1,4 @@
+let isAdminReviewMode = false;
 // ১. অর্ডার কনফার্ম করার আগে WhatsApp বাটন ব্লক রাখা এবং অর্ডার আইডিসহ মেসেজ পাঠানো
 function orderViaWhatsApp(waNumber) {
     const name = document.getElementById('custName').value.trim();
@@ -204,57 +205,91 @@ function renderReviews() {
 let loveTapCount = 0;
 let loveTapTimer = null;
 let lastTappedProductId = null;
-// ছবির ওপরের আলাদা Link বাটন লুকানো এবং Love বাটনে ৪ ক্লিকে লিংক কপি চালু করা
-(function setupLoveLinkFeature() {
-    let loveTapCount = 0;
-    let loveTapTimer = null;
-    let lastTappedId = null;
 
-    // ২. Love বাটনে ১ বার ক্লিক করলে Wishlist, টানা ৪ বার ক্লিক করলে Link Copy
-    window.handleLoveClick = function (id) {
-        if (lastTappedId !== id) {
-            loveTapCount = 0;
-            lastTappedId = id;
+
+// Love বাটনে ১ ক্লিকে Wishlist এবং টানা ৪ ক্লিকে Link Copy (১০০% কার্যকর সমাধান)
+(function setupFourTapLinkCopy() {
+    const originalToggleWishlist = window.toggleWishlist;
+    let tapCount = 0;
+    let tapTimer = null;
+    let currentProductId = null;
+
+    window.toggleWishlist = function (id) {
+        if (currentProductId !== id) {
+            tapCount = 0;
+            currentProductId = id;
         }
-        loveTapCount++;
-        clearTimeout(loveTapTimer);
 
-        if (loveTapCount >= 4) {
-            loveTapCount = 0;
-            const url = `${window.location.origin}${window.location.pathname}?product=${id}`;
-            navigator.clipboard.writeText(url).then(() => {
-                alert('🔗 প্রোডাক্টের লিংক কপি হয়েছে! এখন শেয়ার করতে পারবেন।');
-            }).catch(() => {
-                prompt('লিংকটি কপি করুন:', url);
-            });
-        } else {
-            loveTapTimer = setTimeout(() => {
-                if (loveTapCount > 0 && loveTapCount < 4) {
-                    toggleWishlist(id);
-                }
-                loveTapCount = 0;
-            }, 450);
+        tapCount++;
+        clearTimeout(tapTimer);
+
+        // যদি টানা ৪ বার ক্লিক করা হয় -> লিংক কপি হবে
+        if (tapCount >= 4) {
+            tapCount = 0;
+            const url = window.location.origin + window.location.pathname + '?product=' + id;
+            copyProductUrlSafely(url);
+            return;
         }
-    };
 
-    // ১. পেজের প্রোডাক্ট কার্ডগুলো থেকে ছবির ওপরের Link বাটন সরিয়ে Love বাটন আপডেট করা
-    const updateCards = () => {
-        // ছবির ওপরের আলাদা লিংক বাটনগুলো লুকিয়ে ফেলা
-        document.querySelectorAll('.card-top-actions').forEach(el => el.style.display = 'none');
-
-        // নিচের Love বাটনে ৪-ক্লিক ফাংশন যুক্ত করা
-        document.querySelectorAll('.wish-inline-btn').forEach(btn => {
-            btn.style.touchAction = 'manipulation';
-            const oldClick = btn.getAttribute('onclick');
-            if (oldClick && oldClick.includes('toggleWishlist')) {
-                const idMatch = oldClick.match(/\d+/);
-                if (idMatch) {
-                    btn.setAttribute('onclick', `handleLoveClick(${idMatch[0]})`);
+        // ৪ বার না হলে -> ৬০০ মিলিসেকেন্ড পর স্বাভাবিক ১-ক্লিক Wishlist হিসেবে কাজ করবে
+        tapTimer = setTimeout(() => {
+            if (tapCount > 0 && tapCount < 4) {
+                if (typeof originalToggleWishlist === 'function') {
+                    originalToggleWishlist(id);
                 }
             }
-        });
+            tapCount = 0;
+        }, 600);
     };
 
-    // পেজ লোড হলে এবং সার্চ/ফিল্টার করলেও যেন এটি কাজ করে
-    setInterval(updateCards, 500);
+    // ফোন ও ল্যাপটপ সব ব্রাউজারে নিশ্চিতভাবে লিংক কপি করার ফাংশন
+    function copyProductUrlSafely(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToastMessage('🔗 প্রোডাক্টের লিংক কপি হয়েছে!');
+            }).catch(() => {
+                manualCopyFallback(text);
+            });
+        } else {
+            manualCopyFallback(text);
+        }
+    }
+
+    function manualCopyFallback(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showToastMessage('🔗 প্রোডাক্টের লিংক কপি হয়েছে!');
+        } catch (err) {
+            prompt('লিংকটি কপি করুন:', text);
+        }
+        document.body.removeChild(textArea);
+    }
+
+    // স্ক্রিনের নিচে কপি হওয়ার মেসেজ দেখানো
+    function showToastMessage(msg) {
+        let toast = document.getElementById('copyToast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'copyToast';
+            toast.style.cssText = 'position:fixed; bottom:85px; left:50%; transform:translateX(-50%); background:#8B1E41; color:#fff; padding:8px 18px; border-radius:20px; font-size:13px; font-weight:600; z-index:99999; box-shadow:0 4px 12px rgba(0,0,0,0.25); white-space:nowrap;';
+            document.body.appendChild(toast);
+        }
+        toast.innerText = msg;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 2500);
+    }
+
+    // ছবির ওপরের আলাদা Link বাটন লুকিয়ে রাখা এবং Love বাটনের জুম আটকানো
+    setInterval(() => {
+        document.querySelectorAll('.card-top-actions').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.wish-inline-btn').forEach(btn => btn.style.touchAction = 'manipulation');
+    }, 300);
 })();
+
