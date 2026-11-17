@@ -1158,3 +1158,43 @@ html, body {
     z-index: 10;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
+/* ১. প্রোডাক্ট কার্ডের লম্বা ভাব কমিয়ে কম্প্যাক্ট ও প্রিমিয়াম করা */
+.product-img-wrap {
+    aspect-ratio: 4 / 3.4 !important; /* ছবির উচ্চতা সামান্য কমবে */
+}
+
+.product-info {
+    padding: 8px 10px !important;
+}
+
+.product-title {
+    font-size: 13px !important;
+    margin: 2px 0 !important;
+    -webkit-line-clamp: 1 !important; /* নাম এক লাইনে থাকবে, কার্ড লম্বা হবে না */
+}
+
+.product-rating {
+    margin-bottom: 3px !important;
+    font-size: 11px !important;
+}
+
+.price-row {
+    margin-bottom: 6px !important;
+}
+
+.card-buttons {
+    gap: 4px !important;
+}
+
+.btn-cart, .btn-order {
+    padding: 5px 6px !important;
+    font-size: 12px !important;
+}
+
+/* ২. কপিরাইট লেখাটি সামান্য উপরে তোলা যাতে ফোনে ট্যাপ করতে সুবিধা হয় */
+.footer {
+    padding-top: 16px !important;
+    padding-bottom: 45px !important; /* নিচে পর্যাপ্ত ফাঁকা জায়গা থাকবে */
+    cursor: pointer;
+    user-select: none;
+}
