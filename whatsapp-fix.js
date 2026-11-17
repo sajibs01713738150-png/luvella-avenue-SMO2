@@ -293,3 +293,37 @@ let lastTappedProductId = null;
     }, 300);
 })();
 
+// script.js না ছুঁয়েই কার্ডে Love বাটন বসানো এবং Add to Cart সরিয়ে শুধু Order Now রাখা
+setInterval(function () {
+    document.querySelectorAll('.product-card').forEach(card => {
+        // ১. Add to Cart বাটনটি লুকিয়ে শুধু Order Now রাখা
+        const cartBtn = card.querySelector('.btn-cart');
+        if (cartBtn) cartBtn.style.display = 'none';
+
+        // ২. দামের পাশে Love (🤍/❤️) বাটন না থাকলে অটোমেটিক বসিয়ে দেওয়া
+        const priceRow = card.querySelector('.price-row');
+        const orderBtn = card.querySelector('.btn-order');
+
+        if (priceRow && orderBtn && !priceRow.querySelector('.wish-inline-btn')) {
+            const match = orderBtn.getAttribute('onclick').match(/\d+/);
+            if (match) {
+                const prodId = parseInt(match[0]);
+                priceRow.style.justifyContent = 'space-between';
+                priceRow.style.alignItems = 'center';
+                priceRow.style.width = '100%';
+
+                const wishList = JSON.parse(localStorage.getItem('luvella_wish')) || [];
+                const isWished = wishList.some(w => w.id === prodId);
+
+                const loveBtn = document.createElement('button');
+                loveBtn.className = 'wish-inline-btn' + (isWished ? ' wished' : '');
+                loveBtn.innerHTML = isWished ? '❤️' : '🤍';
+                loveBtn.title = '১ ক্লিকে Wishlist | ৪ ক্লিকে Link Copy';
+                loveBtn.style.touchAction = 'manipulation';
+                loveBtn.setAttribute('onclick', `toggleWishlist(${prodId})`);
+
+                priceRow.appendChild(loveBtn);
+            }
+        }
+    });
+}, 300);
