@@ -1309,4 +1309,26 @@ background-clip: text;
     object-fit: contain !important;
     transform: scale(1.12) !important;
 }
+/* লোগোর প্রজাপতি ও LA অংশটি একদম স্পষ্ট ও বড় করে দেখানো */
+.live-3d-logo img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    transform: scale(1.45) !important; /* চারপাশের সাদা অংশ কেটে প্রজাপতি ও LA বড় দেখাবে */
+}
+/* লোগোটি গোল ফ্রেমের মাঝখানে একদম স্পষ্ট ও নিখুঁতভাবে দেখানো */
+.live-3d-logo {
+    background: #F4F4F4 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.live-3d-logo img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    transform: scale(1.22) !important; /* প্রজাপতি ও LA পুরোটা স্পষ্ট দেখাবে */
+}
 
