@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luvella AVENUE - প্রিমিয়াম অনলাইন শপ</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <link href="https://googleapis.com" rel="stylesheet">
+</head>
+<body>
+
+    <!-- টপ অফার বার -->
+    <div class="top-bar">
+        ✨ সারা বাংলাদেশে ক্যাশ অন ডেলিভারি সুবিধা | ২,০০০৳+ অর্ডারে ফ্রি ডেলিভারি!
+    </div>
+
+    <!-- হেডার সেকশন -->
+    <header class="header">
+        <div class="container header-top">
+            <!-- বামে ৩ডি লোগো -->
+            <a href="#" class="logo-box">
+                <div class="logo-3d">
+                    <span>LA</span>
+                </div>
+                <div class="logo-text">
+                    <h1>Luvella</h1>
+                    <p>AVENUE</p>
+                </div>
+            </a>
+
+            <!-- ডানে ট্র্যাক, উইশলিস্ট ও কার্ট -->
+            <div class="header-actions">
+                <button class="action-btn track-btn" onclick="openModal('trackModal')">
+                    <i class="fas fa-box"></i> ট্র্যাক
+                </button>
+                <button class="icon-btn" onclick="openModal('wishlistModal')">
+                    <i class="far fa-heart"></i>
+                    <span class="badge" id="wishCount">0</span>
+                </button>
+                <button class="icon-btn" onclick="openModal('cartModal')">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="badge" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- নিচে সার্চ বার -->
+        <div class="container search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="পছন্দের প্রোডাক্ট খুঁজুন (যেমন: হুডি, ঘড়ি, ব্যাগ, কসমেটিকস...)" onkeyup="searchProducts()">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ক্যাটাগরি বাটনসমূহ -->
+    <section class="container category-section">
+        <div class="category-grid">
+            <button class="cat-btn active" onclick="filterCategory('all', this)">হোম</button>
+            <button class="cat-btn" onclick="filterCategory('ব্যাগ ও ফ্যাশন', this)">ব্যাগ ও ফ্যাশন</button>
+            <button class="cat-btn" onclick="filterCategory('বিউটি কেয়ার', this)">বিউটি কেয়ার</button>
+            <button class="cat-btn" onclick="filterCategory('স্মার্ট গ্যাজেট', this)">স্মার্ট গ্যাজেট</button>
+            <button class="cat-btn" onclick="filterCategory('জুয়েলারি', this)">জুয়েলারি</button>
+            <button class="cat-btn" onclick="filterCategory('হোম ডেকোর', this)">হোম ডেকোর</button>
+        </div>
+        <div class="special-offer-wrap">
+            <button class="special-btn" onclick="filterCategory('স্পেশাল অফার', this)">🔥 স্পেশাল অফার</button>
+        </div>
+    </section>
+
+    <!-- প্রোডাক্ট সেকশন -->
+    <main class="container main-content">
+        <div class="section-header">
+            <h2>আমাদের সেরা কালেকশন</h2>
+            <span id="productCountText">লোড হচ্ছে...</span>
+        </div>
+
+        <!-- এখানে জাভাস্ক্রিপ্ট থেকে প্রোডাক্ট আসবে (মোবাইলে ২টি, ল্যাপটপে ৪টি) -->
+        <div class="product-grid" id="productGrid"></div>
+    </main>
+
+    <!-- কাস্টমার রিভিউ সেকশন -->
+    <section class="container review-section">
+        <h2>সম্মানিত ক্রেতাদের মতামত</h2>
+        <div class="review-grid" id="reviewList">
+            <div class="review-card">
+                <div class="stars">★★★★★ (5.0)</div>
+                <p>"প্রোডাক্টের কোয়ালিটি অসাধারণ! যেমন ছবিতে দেখেছি ঠিক তেমনটাই পেয়েছি।"</p>
+                <h4>- সাদিয়া ইসলাম, ঢাকা</h4>
+            </div>
+            <div class="review-card">
+                <div class="stars">★★★★☆ (4.8)</div>
+                <p>"খুব দ্রুত ডেলিভারি পেয়েছি। প্যাকেজিং অনেক প্রিমিয়াম ছিল।"</p>
+                <h4>- তানভীর আহমেদ, চট্টগ্রাম</h4>
+            </div>
+        </div>
+        <div class="add-review-box">
+            <h3>আপনার মতামত দিন</h3>
+            <input type="text" id="revName" placeholder="আপনার নাম">
+            <select id="revRating">
+                <option value="5.0">★★★★★ (5.0)</option>
+                <option value="4.8">★★★★★ (4.8)</option>
+                <option value="4.5">★★★★☆ (4.5)</option>
+            </select>
+            <textarea id="revText" placeholder="প্রোডাক্ট সম্পর্কে আপনার অভিজ্ঞতা লিখুন..."></textarea>
+            <button onclick="addReview()">রিভিউ পোস্ট করুন</button>
+        </div>
+    </section>
+
+    <!-- ফুটার -->
+    <footer class="footer">
+        <p>© ২০২৬ Luvella Avenue. সর্বস্বত্ব সংরক্ষিত।</p>
+    </footer>
+       <!-- ফ্লোটিং হেল্প বাটন ও কন্টাক্ট পপআপ -->
+    
+            <div class="help-widget">
+        <div class="help-popup" id="helpPopup">
+            <h4>সরাসরি কথা বলুন বা WhatsApp করুন</h4>
+            <div class="contact-item">
+                <span>01346473166</span>
+                <div class="contact-btns">
+                    <a href="tel:01346473166" class="call-text-btn">📞 Call</a>
+                    <a href="https://wa.me" target="_blank" class="wa-text-btn">💬 WhatsApp</a>
+                </div>
+            </div>
+            <div class="contact-item">
+                <span>01537233354</span>
+                <div class="contact-btns">
+                    <a href="tel:01537233354" class="call-text-btn">📞 Call</a>
+                    <a href="https://wa.me" target="_blank" class="wa-text-btn">💬 WhatsApp</a>
+                </div>
+            </div>
+            <div class="contact-item">
+                <span>01306842947</span>
+                <div class="contact-btns">
+                    <a href="tel:01306842947" class="call-text-btn">📞 Call</a>
+                    <a href="https://wa.me" target="_blank" class="wa-text-btn">💬 WhatsApp</a>
+                </div>
+            </div>
+        </div>
+        <button class="help-btn" onclick="toggleHelp()">
+            🎧
+            <span>Help</span>
+        </button>
+    </div>
+
+        
+    <!-- প্রোডাক্ট জুম মোডাল -->
+    <div class="modal" id="zoomModal">
+        <div class="modal-content zoom-content">
+            <span class="close-btn" onclick="closeModal('zoomModal')">&times;</span>
+            <img id="zoomImg" src="" alt="Product Zoom">
+            <h3 id="zoomTitle"></h3>
+            <p id="zoomPrice"></p>
+        </div>
+    </div>
+
+    <!-- অর্ডার চেকআউট মোডাল -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('orderModal')">&times;</span>
+            <h3>অর্ডার সম্পন্ন করুন</h3>
+            <div id="orderProductSummary" class="order-summary-box"></div>
+            
+            <input type="text" id="custName" placeholder="আপনার পূর্ণ নাম *" required>
+            <input type="tel" id="custPhone" placeholder="মোবাইল নম্বর *" required>
+            <textarea id="custAddress" placeholder="সম্পূর্ণ ঠিকানা (জেলা, থানা, বাসা নং) *" required></textarea>
+            
+            <label>পেমেন্ট মেথড নির্বাচন করুন:</label>
+            <select id="paymentMethod" onchange="togglePaymentInfo()">
+                <option value="Cash on Delivery">ক্যাশ অন ডেলিভারি (পণ্য হাতে পেয়ে টাকা)</option>
+                <option value="bKash">বিকাশ (bKash Personal)</option>
+                <option value="Nagad">নগদ (Nagad Personal)</option>
+            </select>
+            
+            <div id="mobileBankingInfo" class="payment-info" style="display:none;">
+                <p>নিচের নম্বরে Send Money করে ট্রানজেকশন আইডি দিন:</p>
+                <strong>01346473166 (bKash / Nagad Personal)</strong>
+                <input type="text" id="trxId" placeholder="Transaction ID (TrxID) লিখুন">
+            </div>
+
+            <button class="confirm-order-btn" onclick="confirmOrder()">অর্ডার কনফার্ম ও রিসিট প্রিন্ট</button>
+            
+            <div class="wa-order-box">
+                <p>অথবা সরাসরি WhatsApp-এ অর্ডার করুন:</p>
+                <div class="wa-buttons">
+                    <button onclick="orderViaWhatsApp('8801346473166')"><i class="fab fa-whatsapp"></i> WhatsApp 1</button>
+                    <button onclick="orderViaWhatsApp('8801537233354')"><i class="fab fa-whatsapp"></i> WhatsApp 2</button>
+                    <button onclick="orderViaWhatsApp('8801306842947')"><i class="fab fa-whatsapp"></i> WhatsApp 3</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- অর্ডার রিসিট ও প্রিন্ট মোডাল -->
+    <div class="modal" id="receiptModal">
+        <div class="modal-content" id="printableReceipt">
+            <span class="close-btn no-print" onclick="closeModal('receiptModal')">&times;</span>
+            <div class="receipt-header">
+                <h2>Luvella AVENUE</h2>
+                <p>অর্ডার ইনভয়েস / রিসিট</p>
+            </div>
+            <div id="receiptDetails"></div>
+            <button class="print-btn no-print" onclick="window.print()"><i class="fas fa-print"></i> অর্ডার ডিটেইলস প্রিন্ট করুন</button>
+        </div>
+    </div>
+
+    <!-- অর্ডার ট্র্যাক মোডাল -->
+    <div class="modal" id="trackModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('trackModal')">&times;</span>
+            <h3>অর্ডার ট্র্যাক করুন</h3>
+            <input type="text" id="trackOrderId" placeholder="আপনার অর্ডার আইডি লিখুন (যেমন: LUV-1024)">
+            <button class="confirm-order-btn" onclick="trackOrder()">স্ট্যাটাস দেখুন</button>
+            <div id="trackResult" class="track-result"></div>
+        </div>
+    </div>
+
+
+    <!-- কার্ট মোডাল -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('cartModal')">&times;</span>
+            <h3>আপনার শপিং ব্যাগ</h3>
+            <div id="cartItemsList"></div>
+            <div id="cartTotalBox" class="cart-total"></div>
+            <button class="confirm-order-btn" onclick="checkoutFromCart()">সবগুলো অর্ডার করুন</button>
+        </div>
+    </div>
+
+    <!-- উইশলিস্ট মোডাল -->
+    <div class="modal" id="wishlistModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('wishlistModal')">&times;</span>
+            <h3>আপনার পছন্দের তালিকা (Wishlist)</h3>
+            <div id="wishlistItemsList"></div>
+        </div>
+    </div>
+
+    <!-- জাভাস্ক্রিপ্ট ফাইল লিংক -->
+    <script src="products.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
