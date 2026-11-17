@@ -145,7 +145,7 @@ function renderReviews() {
 
         if (tapCount >= 3) {
             tapCount = 0;
-            const pass = prompt('অ্যাডমিন পাসওয়ার্ড দিন (SMO):');
+            const pass = prompt('অ্যাডমিন পাসওয়ার্ড দিন (1234):');
             if (pass === 'SMO') {
                 isAdminReviewMode = !isAdminReviewMode;
                 renderReviews();
