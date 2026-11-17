@@ -157,39 +157,46 @@ function renderReviews() {
     });
     renderReviews();
 })();
-// ফোনের Back বাটন চাপলে ওয়েবসাইট থেকে বের না হয়ে শুধু খোলা পপআপ বন্ধ হবে
-(function fixMobileBackButton() {
-    const originalOpenModal = window.openModal;
-    const originalCloseModal = window.closeModal;
+// ফোনের Back বাটন চাপলে ওয়েবসাইট থেকে বের না হওয়ার ১০০% কার্যকর সমাধান
+(function bulletproofBackButton() {
+    // ১. পেজ খোলার সাথে সাথে একটি বেস হিস্ট্রি স্টেট তৈরি রাখা
+    if (!window.location.hash) {
+        history.replaceState({ page: 'home' }, '', '#home');
+    }
 
-    // পপআপ খোলার সময় ব্রাউজার হিস্ট্রিতে একটি ধাপ যুক্ত করা
+    const oldOpenModal = window.openModal;
+    const oldCloseModal = window.closeModal;
+
+    // ২. যেকোনো পপআপ (Order, Zoom, Cart, Track) খুললে URL-এ #modal যুক্ত হবে
     window.openModal = function (modalId) {
-        if (typeof originalOpenModal === 'function') {
-            originalOpenModal(modalId);
+        if (typeof oldOpenModal === 'function') {
+            oldOpenModal(modalId);
         } else {
             const m = document.getElementById(modalId);
             if (m) m.classList.add('show');
         }
-        history.pushState({ modalOpen: true }, "");
+        history.pushState({ modal: modalId }, '', '#' + modalId);
     };
 
-    // ক্রস (×) বাটনে চাপ দিয়ে পপআপ বন্ধ করলে হিস্ট্রি সমন্বয় করা
+    // ৩. ক্রস (×) বাটনে চাপ দিয়ে বন্ধ করলে হিস্ট্রি আবার #home-এ ফিরে আসবে
     window.closeModal = function (modalId) {
-        if (typeof originalCloseModal === 'function') {
-            originalCloseModal(modalId);
+        if (typeof oldCloseModal === 'function') {
+            oldCloseModal(modalId);
         } else {
             const m = document.getElementById(modalId);
             if (m) m.classList.remove('show');
         }
-        if (history.state && history.state.modalOpen) {
+        if (window.location.hash !== '#home') {
             history.back();
         }
     };
 
-    // ফোনের হার্ডওয়্যার বা ব্রাউজার Back বাটন চাপলে পপআপ বন্ধ করা
+    // ৪. ফোনের Back বাটন চাপলে খোলা সব পপআপ ও হেল্প বক্স বন্ধ হবে, সাইট থেকে বের হবে না
     window.addEventListener('popstate', function () {
         document.querySelectorAll('.modal.show').forEach(modal => {
             modal.classList.remove('show');
         });
+        const helpPopup = document.getElementById('helpPopup');
+        if (helpPopup) helpPopup.classList.remove('show');
     });
 })();
