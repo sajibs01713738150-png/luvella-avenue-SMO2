@@ -15,43 +15,47 @@
         ✨ সারা বাংলাদেশে ক্যাশ অন ডেলিভারি সুবিধা | ২,০০০৳+ অর্ডারে ফ্রি ডেলিভারি!
     </div>
 
-    <!-- হেডার সেকশন -->
+        <!-- হেডার সেকশন -->
     <header class="header">
-        <div class="container header-top">
-            <!-- বামে ৩ডি লোগো -->
-            <a href="#" class="logo-box">
-                <div class="logo-3d">
-                    <span>LA</span>
-                </div>
-                <div class="logo-text">
-                    <h1>Luvella</h1>
-                    <p>AVENUE</p>
-                </div>
-            </a>
+        <div class="container">
+            <div class="header-top">
+                <!-- বামে ৩ডি লোগো -->
+                <a href="#" class="logo-box">
+                    <div class="logo-3d">
+                        <span>LA</span>
+                    </div>
+                    <div class="logo-text">
+                        <h1>Luvella</h1>
+                        <p>AVENUE</p>
+                    </div>
+                </a>
 
-            <!-- ডানে ট্র্যাক, উইশলিস্ট ও কার্ট -->
-                        <div class="header-actions">
-                <button class="action-btn track-btn" onclick="openModal('trackModal')">
-                    📦 ট্র্যাক
-                </button>
-                <button class="icon-btn" onclick="openModal('wishlistModal')">
-                    ❤️
-                    <span class="badge" id="wishCount">0</span>
-                </button>
-                <button class="icon-btn" onclick="openModal('cartModal')">
-                    🛍️
-                    <span class="badge" id="cartCount">0</span>
-                </button>
+                <!-- ডানে ট্র্যাক, উইশলিস্ট ও কার্ট -->
+                <div class="header-actions">
+                    <button class="action-btn track-btn" onclick="openModal('trackModal')">
+                        📦 ট্র্যাক
+                    </button>
+                    <button class="icon-btn" onclick="openModal('wishlistModal')">
+                        ❤️
+                        <span class="badge" id="wishCount">0</span>
+                    </button>
+                    <button class="icon-btn" onclick="openModal('cartModal')">
+                        🛍️
+                        <span class="badge" id="cartCount">0</span>
+                    </button>
+                </div>
             </div>
 
-        <!-- নিচে সার্চ বার -->
-        <div class="container search-container">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="পছন্দের প্রোডাক্ট খুঁজুন (যেমন: হুডি, ঘড়ি, ব্যাগ, কসমেটিকস...)" onkeyup="searchProducts()">
-                <button><i class="fas fa-search"></i></button>
+            <!-- নিচে সার্চ বার -->
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="পছন্দের প্রোডাক্ট খুঁজুন..." onkeyup="searchProducts()">
+                    <button onclick="searchProducts()">🔍</button>
+                </div>
             </div>
         </div>
     </header>
+
 
     <!-- ক্যাটাগরি বাটনসমূহ -->
     <section class="container category-section">
