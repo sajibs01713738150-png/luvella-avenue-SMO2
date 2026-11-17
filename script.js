@@ -307,7 +307,8 @@ function confirmOrder() {
     closeModal('orderModal');
     openModal('receiptModal');
 }
-function orderViaWhatsApp(waNumber) {
+
+  function orderViaWhatsApp(waNumber) {
     const name = document.getElementById('custName').value.trim() || 'কাস্টমার';
     const phone = document.getElementById('custPhone').value.trim() || 'দেওয়া হয়নি';
     const address = document.getElementById('custAddress').value.trim() || 'দেওয়া হয়নি';
@@ -318,9 +319,10 @@ function orderViaWhatsApp(waNumber) {
 
     const message = `আসসালামু আলাইকুম Luvella Avenue,\nআমি একটি অর্ডার করতে চাই:\n\nপ্রোডাক্ট: ${itemText}\nমোট বিল: ${total}৳\nপেমেন্ট: ${payment}\n\nনাম: ${name}\nমোবাইল: ${phone}\nঠিকানা: ${address}`;
     
-    const waUrl = `https://wa.me{waNumber}?text=${encodeURIComponent(message)}`;
+    const waUrl = `https://whatsapp.com{waNumber}&text=${encodeURIComponent(message)}`;
     window.open(waUrl, '_blank');
 }
+
 
 
 // অর্ডার ট্র্যাকিং ফাংশন
