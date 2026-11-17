@@ -1302,4 +1302,11 @@ background-clip: text;
         display: block !important;
     }
 }
+/* লোগোর প্রজাপতি ও LA অংশটি গোল বক্সের মাঝখানে নিখুঁতভাবে ফিট করা */
+.live-3d-logo img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    transform: scale(1.12) !important;
+}
 
