@@ -50,3 +50,39 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+// ট্র্যাক বাটন এবং স্ট্যাটাস চেক করার স্থায়ী সমাধান
+document.addEventListener("DOMContentLoaded", function () {
+    const trackBtn = document.querySelector('#trackModal .confirm-order-btn');
+    if (trackBtn) {
+        trackBtn.onclick = function () {
+            const inputEl = document.getElementById('trackOrderId');
+            const resultBox = document.getElementById('trackResult');
+            const query = inputEl.value.trim().toUpperCase();
+
+            if (!query) {
+                resultBox.innerHTML = `<p style="color:#E11D48;">দয়া করে আপনার অর্ডার আইডি অথবা মোবাইল নম্বর লিখুন।</p>`;
+                return;
+            }
+
+            let savedOrders = JSON.parse(localStorage.getItem('luvella_orders')) || [];
+            const matchedOrders = savedOrders.filter(o =>
+                (o.orderId && o.orderId.toUpperCase() === query) ||
+                (o.phone && o.phone.trim() === query)
+            );
+
+            if (matchedOrders.length > 0) {
+                resultBox.innerHTML = matchedOrders.map(order => `
+                    <div style="border-bottom: 1px dashed #F3D1DC; padding-bottom: 8px; margin-bottom: 8px;">
+                        <p style="color:#8B1E41; font-weight:bold;">অর্ডার আইডি: ${order.orderId}</p>
+                        <p><strong>ক্রেতা:</strong> ${order.name} (${order.phone})</p>
+                        <p><strong>পণ্য:</strong> ${order.items.map(i => `${i.name} (${i.qty}টি)`).join(', ')}</p>
+                        <p><strong>মোট বিল:</strong> ${order.totalAmount}৳ (${order.payment})</p>
+                        <p><strong>বর্তমান অবস্থা:</strong> <span style="color:green; font-weight:bold;">${order.status}</span></p>
+                    </div>
+                `).join('');
+            } else {
+                resultBox.innerHTML = `<p style="color:#E11D48;">দুঃখিত! "${query}" দিয়ে কোনো অর্ডার খুঁজে পাওয়া যায়নি।</p>`;
+            }
+        };
+    }
+});
