@@ -1,3 +1,10 @@
+// পেজ চালু হওয়ার সাথে সাথেই প্রোডাক্ট লোড নিশ্চিত করা
+document.addEventListener("DOMContentLoaded", function() {
+    if (typeof products !== "undefined" && typeof renderProducts === "function") {
+        renderProducts(products);
+    }
+});
+
 let cart = JSON.parse(localStorage.getItem('luvella_cart')) || [];
 let wishlist = JSON.parse(localStorage.getItem('luvella_wish')) || [];
 let currentOrderItems = [];
