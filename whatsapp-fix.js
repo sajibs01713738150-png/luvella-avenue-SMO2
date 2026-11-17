@@ -200,3 +200,61 @@ function renderReviews() {
         if (helpPopup) helpPopup.classList.remove('show');
     });
 })();
+// Love বাটনে ১ ক্লিকে Wishlist এবং টানা ৪ ক্লিকে Product Link কপি করা
+let loveTapCount = 0;
+let loveTapTimer = null;
+let lastTappedProductId = null;
+// ছবির ওপরের আলাদা Link বাটন লুকানো এবং Love বাটনে ৪ ক্লিকে লিংক কপি চালু করা
+(function setupLoveLinkFeature() {
+    let loveTapCount = 0;
+    let loveTapTimer = null;
+    let lastTappedId = null;
+
+    // ২. Love বাটনে ১ বার ক্লিক করলে Wishlist, টানা ৪ বার ক্লিক করলে Link Copy
+    window.handleLoveClick = function (id) {
+        if (lastTappedId !== id) {
+            loveTapCount = 0;
+            lastTappedId = id;
+        }
+        loveTapCount++;
+        clearTimeout(loveTapTimer);
+
+        if (loveTapCount >= 4) {
+            loveTapCount = 0;
+            const url = `${window.location.origin}${window.location.pathname}?product=${id}`;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('🔗 প্রোডাক্টের লিংক কপি হয়েছে! এখন শেয়ার করতে পারবেন।');
+            }).catch(() => {
+                prompt('লিংকটি কপি করুন:', url);
+            });
+        } else {
+            loveTapTimer = setTimeout(() => {
+                if (loveTapCount > 0 && loveTapCount < 4) {
+                    toggleWishlist(id);
+                }
+                loveTapCount = 0;
+            }, 450);
+        }
+    };
+
+    // ১. পেজের প্রোডাক্ট কার্ডগুলো থেকে ছবির ওপরের Link বাটন সরিয়ে Love বাটন আপডেট করা
+    const updateCards = () => {
+        // ছবির ওপরের আলাদা লিংক বাটনগুলো লুকিয়ে ফেলা
+        document.querySelectorAll('.card-top-actions').forEach(el => el.style.display = 'none');
+
+        // নিচের Love বাটনে ৪-ক্লিক ফাংশন যুক্ত করা
+        document.querySelectorAll('.wish-inline-btn').forEach(btn => {
+            btn.style.touchAction = 'manipulation';
+            const oldClick = btn.getAttribute('onclick');
+            if (oldClick && oldClick.includes('toggleWishlist')) {
+                const idMatch = oldClick.match(/\d+/);
+                if (idMatch) {
+                    btn.setAttribute('onclick', `handleLoveClick(${idMatch[0]})`);
+                }
+            }
+        });
+    };
+
+    // পেজ লোড হলে এবং সার্চ/ফিল্টার করলেও যেন এটি কাজ করে
+    setInterval(updateCards, 500);
+})();
