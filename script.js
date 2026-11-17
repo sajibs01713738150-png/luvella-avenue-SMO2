@@ -316,17 +316,18 @@ function confirmOrder() {
 }
 
 function orderViaWhatsApp(waNumber) {
-    const name = document.getElementById('custName').value.trim() || 'Customer';
-    const phone = document.getElementById('custPhone').value.trim() || 'N/A';
-    const address = document.getElementById('custAddress').value.trim() || 'N/A';
+    const name = document.getElementById('custName').value.trim() || 'দেওয়া হয়নি';
+    const phone = document.getElementById('custPhone').value.trim() || 'দেওয়া হয়নি';
+    const address = document.getElementById('custAddress').value.trim() || 'দেওয়া হয়নি';
     const payment = document.getElementById('paymentMethod').value;
 
-    let itemText = currentOrderItems.map(i => `${i.name} (${i.qty} pcs - ${i.price * i.qty} TK)`).join(', ');
+    let itemText = currentOrderItems.map(i => `${i.name} (${i.qty}টি - ${i.price * i.qty}৳)`).join(', ');
     let total = currentOrderItems.reduce((sum, i) => sum + (i.price * i.qty), 0);
 
-    const message = `Assalamu Alaikum Luvella Avenue,\nI want to order:\n\nProduct: ${itemText}\nTotal: ${total} TK\nPayment: ${payment}\n\nName: ${name}\nPhone: ${phone}\nAddress: ${address}`;
+    const message = `আসসালামু আলাইকুম Luvella Avenue,\nআমি একটি অর্ডার করতে চাই:\n\nপ্রোডাক্ট: ${itemText}\nমোট বিল: ${total}৳\nপেমেন্ট: ${payment}\n\nনাম: ${name}\nমোবাইল: ${phone}\nঠিকানা: ${address}`;
     
-    window.open(`https://wa.me{waNumber}?text=${encodeURIComponent(message)}`, '_blank');
+    const finalUrl = 'https://wa.me' + waNumber + '?text=' + encodeURIComponent(message);
+    window.open(finalUrl, '_blank');
 }
 
 

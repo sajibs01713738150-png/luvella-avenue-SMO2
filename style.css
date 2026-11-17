@@ -974,3 +974,7 @@ html, body {
     flex-shrink: 0;
     color: #FFFFFF;
 }
+.wa-buttons button {
+    font-size: 11px !important;
+    padding: 8px 2px !important;
+}
