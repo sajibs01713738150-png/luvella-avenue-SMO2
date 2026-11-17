@@ -86,3 +86,9 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 });
+// জুম বা যেকোনো পপআপের বাইরের কালো অংশে ক্লিক করলেই সহজে বন্ধ হবে
+window.addEventListener('click', function (event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.classList.remove('show');
+    }
+});

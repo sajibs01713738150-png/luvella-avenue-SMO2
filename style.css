@@ -1092,3 +1092,69 @@ html, body {
     margin-top: 3px !important;
     padding-left: 2px;
 }
+/* ১. মোবাইলে লোগো ও ট্র্যাক বাটনের মাঝে গ্যাপ এবং ট্র্যাক বাটন স্লিম করা */
+@media (max-width: 767px) {
+    .logo-box {
+        gap: 8px !important;
+    }
+    .live-3d-logo {
+        width: 44px !important;
+        height: 44px !important;
+    }
+    .logo-text h1 {
+        font-size: 21px !important;
+    }
+    .logo-text p {
+        font-size: 8.5px !important;
+        letter-spacing: 3.5px !important;
+    }
+    .header-actions {
+        gap: 6px !important;
+    }
+    .track-btn {
+        padding: 4px 9px !important;
+        font-size: 11px !important;
+        white-space: nowrap !important;
+        gap: 3px !important;
+    }
+    .icon-btn {
+        font-size: 18px !important;
+        padding: 3px !important;
+    }
+
+    /* ২. মোবাইলে সব ক্যাটাগরি বাটন ২ লাইনে ফিট করা */
+    .category-grid {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 5px !important;
+    }
+    .cat-btn {
+        padding: 4px 8px !important;
+        font-size: 10.5px !important;
+        line-height: 1.2 !important;
+    }
+}
+
+/* ৩. প্রোডাক্ট জুম মোডাল ও ক্লোজ বাটন সহজ ও বড় করা */
+.zoom-content {
+    position: relative !important;
+    padding-top: 42px !important;
+}
+
+.zoom-content .close-btn {
+    top: 8px !important;
+    right: 10px !important;
+    width: 34px;
+    height: 34px;
+    background: #8B1E41;
+    color: #FFFFFF !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px !important;
+    font-weight: bold;
+    z-index: 10;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
