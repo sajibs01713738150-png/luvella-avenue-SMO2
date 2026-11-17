@@ -1223,3 +1223,16 @@ html, body {
     padding: 4px 6px !important;
     font-size: 11px !important;
 }
+/* হেল্প বাটন নিচে ফিক্সড এবং কপিরাইট অংশ নিচে নামানো */
+.help-widget {
+    position: fixed !important;
+    bottom: 18px !important;
+    right: 18px !important;
+    z-index: 9999 !important;
+}
+
+.footer {
+    margin-top: 50px !important;
+    padding-top: 16px !important;
+    padding-bottom: 18px !important;
+}
