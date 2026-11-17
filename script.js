@@ -341,32 +341,62 @@ function trackOrder() {
         resultBox.innerHTML = `<p style="color:#E11D48;">দুঃখিত! এই অর্ডার আইডি (${inputId}) খুঁজে পাওয়া যায়নি। সঠিক আইডি দিন।</p>`;
     }
 }
+// পেজ লোড হলে সেভ করা রিভিউগুলো দেখানো
+let savedReviews = JSON.parse(localStorage.getItem('luvella_reviews')) || [];
 
-// কাস্টমার রিভিউ যোগ করা
+function renderReviews() {
+    const reviewList = document.getElementById('reviewList');
+    if (!reviewList) return;
+
+    if (savedReviews.length === 0) {
+        reviewList.innerHTML = '<p style="font-size: 13px; color: #666;">এখনও কোনো রিভিউ নেই। পণ্য কেনার পর আপনার অর্ডার আইডি দিয়ে রিভিউ দিন।</p>';
+        return;
+    }
+
+    reviewList.innerHTML = savedReviews.map(r => `
+        <div class="review-card" style="padding: 10px;">
+            <div class="stars" style="font-size: 13px;">★★★★★ (${r.rating}) <span style="color:green; font-size:11px;">✔ Verified Buyer</span></div>
+            <p style="font-size: 13px; margin: 4px 0;">"${r.text}"</p>
+            <h4 style="font-size: 12px;">- ${r.name}</h4>
+        </div>
+    `).join('');
+}
+
+// শুধুমাত্র অর্ডার করা কাস্টমাররাই রিভিউ দিতে পারবে
 function addReview() {
+    const orderIdInput = document.getElementById('revOrderId').value.trim().toUpperCase();
     const name = document.getElementById('revName').value.trim();
     const rating = document.getElementById('revRating').value;
     const text = document.getElementById('revText').value.trim();
 
-    if (!name || !text) {
-        alert('আপনার নাম এবং মতামত লিখুন।');
+    if (!orderIdInput || !name || !text) {
+        alert('দয়া করে অর্ডার আইডি, আপনার নাম এবং মতামত লিখুন।');
         return;
     }
 
-    const reviewList = document.getElementById('reviewList');
-    const newCard = document.createElement('div');
-    newCard.className = 'review-card';
-    newCard.innerHTML = `
-        <div class="stars">★★★★★ (${rating})</div>
-        <p>"${text}"</p>
-        <h4>- ${name}</h4>
-    `;
-    reviewList.prepend(newCard);
+    // চেক করা হচ্ছে এই অর্ডার আইডি দিয়ে আসলেই কেনা হয়েছে কি না
+    let savedOrders = JSON.parse(localStorage.getItem('luvella_orders')) || [];
+    const isValidBuyer = savedOrders.some(o => o.orderId === orderIdInput);
 
+    if (!isValidBuyer) {
+        alert('দুঃখিত! শুধুমাত্র আমাদের ওয়েবসাইট থেকে অর্ডার করা ক্রেতারাই সঠিক Order ID দিয়ে রিভিউ দিতে পারবেন।');
+        return;
+    }
+
+    savedReviews.unshift({ name, rating, text });
+    localStorage.setItem('luvella_reviews', JSON.stringify(savedReviews));
+    renderReviews();
+
+    document.getElementById('revOrderId').value = '';
     document.getElementById('revName').value = '';
     document.getElementById('revText').value = '';
-    alert('আপনার মূল্যবান মতামতের জন্য ধন্যবাদ!');
+    alert('ধন্যবাদ! আপনার ভেরিফায়েড রিভিউটি সফলভাবে যুক্ত হয়েছে।');
 }
+
+// পেজ লোড হওয়ার সাথে সাথে রিভিউ লোড করা
+document.addEventListener('DOMContentLoaded', renderReviews);
+
+
 
 // হেল্প পপআপ ও মোডাল কন্ট্রোল
 function toggleHelp() {

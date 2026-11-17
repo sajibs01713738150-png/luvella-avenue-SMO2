@@ -63,11 +63,11 @@
             <button class="cat-btn" onclick="filterCategory('স্মার্ট গ্যাজেট', this)">স্মার্ট গ্যাজেট</button>
             <button class="cat-btn" onclick="filterCategory('জুয়েলারি', this)">জুয়েলারি</button>
             <button class="cat-btn" onclick="filterCategory('হোম ডেকোর', this)">হোম ডেকোর</button>
-        </div>
-        <div class="special-offer-wrap">
-            <button class="special-btn" onclick="filterCategory('স্পেশাল অফার', this)">🔥 স্পেশাল অফার</button>
+            <button class="cat-btn special-tag" onclick="filterCategory('স্পেশাল অফার', this)">🔥 স্পেশাল অফার</button>
         </div>
     </section>
+
+    
 
     <!-- প্রোডাক্ট সেকশন -->
     <main class="container main-content">
@@ -80,33 +80,31 @@
         <div class="product-grid" id="productGrid"></div>
     </main>
 
-    <!-- কাস্টমার রিভিউ সেকশন -->
-    <section class="container review-section">
-        <h2>সম্মানিত ক্রেতাদের মতামত</h2>
+           <!-- কাস্টমার রিভিউ সেকশন (ছোট ও ভেরিফায়েড ক্রেতাদের জন্য) -->
+    <section class="container review-section compact-review">
+        <h2>ক্রেতাদের রিভিউ</h2>
         <div class="review-grid" id="reviewList">
-            <div class="review-card">
-                <div class="stars">★★★★★ (5.0)</div>
-                <p>"প্রোডাক্টের কোয়ালিটি অসাধারণ! যেমন ছবিতে দেখেছি ঠিক তেমনটাই পেয়েছি।"</p>
-                <h4>- সাদিয়া ইসলাম, ঢাকা</h4>
-            </div>
-            <div class="review-card">
-                <div class="stars">★★★★☆ (4.8)</div>
-                <p>"খুব দ্রুত ডেলিভারি পেয়েছি। প্যাকেজিং অনেক প্রিমিয়াম ছিল।"</p>
-                <h4>- তানভীর আহমেদ, চট্টগ্রাম</h4>
-            </div>
+            <p id="noReviewMsg" style="font-size: 13px; color: #666;">এখনও কোনো রিভিউ নেই। পণ্য কেনার পর আপনার অর্ডার আইডি দিয়ে রিভিউ দিন।</p>
         </div>
-        <div class="add-review-box">
-            <h3>আপনার মতামত দিন</h3>
-            <input type="text" id="revName" placeholder="আপনার নাম">
-            <select id="revRating">
-                <option value="5.0">★★★★★ (5.0)</option>
-                <option value="4.8">★★★★★ (4.8)</option>
-                <option value="4.5">★★★★☆ (4.5)</option>
-            </select>
-            <textarea id="revText" placeholder="প্রোডাক্ট সম্পর্কে আপনার অভিজ্ঞতা লিখুন..."></textarea>
-            <button onclick="addReview()">রিভিউ পোস্ট করুন</button>
+        
+        <div class="add-review-box compact-form">
+            <h3>পণ্য কিনে থাকলে রিভিউ দিন</h3>
+            <div class="review-row">
+                <input type="text" id="revOrderId" placeholder="অর্ডার আইডি (যেমন: LUV-1024) *">
+                <input type="text" id="revName" placeholder="আপনার নাম *">
+                <select id="revRating">
+                    <option value="5.0">★★★★★ (5.0)</option>
+                    <option value="4.8">★★★★★ (4.8)</option>
+                    <option value="4.5">★★★★☆ (4.5)</option>
+                </select>
+            </div>
+            <div class="review-row">
+                <input type="text" id="revText" placeholder="আপনার মতামত লিখুন... *">
+                <button onclick="addReview()">পোস্ট করুন</button>
+            </div>
         </div>
     </section>
+
 
     <!-- ফুটার -->
     <footer class="footer">

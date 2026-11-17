@@ -889,3 +889,55 @@ body {
 .wa-text-btn {
     background: #25D366;
 }
+/* মোবাইলে ক্যাটাগরি বাটন ২ লাইনে ফিট করা */
+.category-grid {
+    display: flex !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 7px;
+}
+
+.cat-btn {
+    padding: 6px 11px !important;
+    font-size: 12px !important;
+    border-radius: 20px;
+}
+
+.cat-btn.special-tag {
+    border-color: #8B1E41;
+    color: #8B1E41;
+    background: #FFF0F5;
+}
+
+.cat-btn.special-tag.active {
+    background: #8B1E41;
+    color: #FFFFFF;
+}
+/* রিভিউ সেকশন ছোট ও কম্প্যাক্ট ডিজাইন */
+.compact-review {
+    margin-top: 25px !important;
+    padding: 15px !important;
+}
+.compact-review h2 {
+    font-size: 17px !important;
+    margin-bottom: 10px !important;
+}
+.compact-form {
+    padding-top: 12px !important;
+    gap: 8px !important;
+}
+.review-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.review-row input, .review-row select {
+    flex: 1;
+    min-width: 120px;
+    padding: 7px 10px !important;
+    font-size: 13px !important;
+}
+.review-row button {
+    padding: 7px 16px !important;
+    font-size: 13px !important;
+}
