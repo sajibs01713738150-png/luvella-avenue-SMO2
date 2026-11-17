@@ -333,23 +333,42 @@ function orderViaWhatsApp(waNumber) {
 
 
 // অর্ডার ট্র্যাকিং ফাংশন
-function trackOrder() {
-    const inputId = document.getElementById('trackOrderId').value.trim().toUpperCase();
-    const resultBox = document.getElementById('trackResult');
-    let savedOrders = JSON.parse(localStorage.getItem('luvella_orders')) || [];
 
-    const found = savedOrders.find(o => o.orderId === inputId);
-    if (found) {
-        resultBox.innerHTML = `
-            <p style="color:#8B1E41; font-weight:bold;">অর্ডার পাওয়া গেছে! (${found.orderId})</p>
-            <p><strong>ক্রেতা:</strong> ${found.name}</p>
-            <p><strong>মোট বিল:</strong> ${found.totalAmount}৳ (${found.payment})</p>
-            <p><strong>বর্তমান অবস্থা:</strong> <span style="color:green; font-weight:bold;">${found.status}</span></p>
-        `;
+
+ // শুধুমাত্র ওয়েবসাইটে অর্ডার করা আসল অর্ডারগুলোই Order ID বা মোবাইল নম্বর দিয়ে ট্র্যাক হবে
+function trackOrder() {
+    const query = document.getElementById('trackOrderId').value.trim().toUpperCase();
+    const resultBox = document.getElementById('trackResult');
+
+    if (!query) {
+        resultBox.innerHTML = `<p style="color:#E11D48;">দয়া করে আপনার অর্ডার আইডি অথবা মোবাইল নম্বর লিখুন।</p>`;
+        return;
+    }
+
+    // ওয়েবসাইট থেকে অর্ডার করা আসল রেকর্ড খোঁজা
+    let savedOrders = JSON.parse(localStorage.getItem('luvella_orders')) || [];
+    
+    // একজন কাস্টমারের একাধিক অর্ডার থাকতে পারে, তাই সবগুলো খুঁজে বের করবে
+    const matchedOrders = savedOrders.filter(o => 
+        o.orderId.toUpperCase() === query || o.phone.trim() === query
+    );
+
+    if (matchedOrders.length > 0) {
+        resultBox.innerHTML = matchedOrders.map(order => `
+            <div style="border-bottom: 1px dashed #F3D1DC; padding-bottom: 8px; margin-bottom: 8px;">
+                <p style="color:#8B1E41; font-weight:bold;">অর্ডার আইডি: ${order.orderId}</p>
+                <p><strong>ক্রেতা:</strong> ${order.name} (${order.phone})</p>
+                <p><strong>পণ্য:</strong> ${order.items.map(i => `${i.name} (${i.qty}টি)`).join(', ')}</p>
+                <p><strong>মোট বিল:</strong> ${order.totalAmount}৳ (${order.payment})</p>
+                <p><strong>তারিখ:</strong> ${order.date}</p>
+                <p><strong>বর্তমান অবস্থা:</strong> <span style="color:green; font-weight:bold;">${order.status}</span></p>
+            </div>
+        `).join('');
     } else {
-        resultBox.innerHTML = `<p style="color:#E11D48;">দুঃখিত! এই অর্ডার আইডি (${inputId}) খুঁজে পাওয়া যায়নি। সঠিক আইডি দিন।</p>`;
+        resultBox.innerHTML = `<p style="color:#E11D48;">দুঃখিত! এই অর্ডার আইডি বা মোবাইল নম্বরে (${query}) কোনো অর্ডার পাওয়া যায়নি।</p>`;
     }
 }
+
 // পেজ লোড হলে সেভ করা রিভিউগুলো দেখানো
 let savedReviews = JSON.parse(localStorage.getItem('luvella_reviews')) || [];
 
