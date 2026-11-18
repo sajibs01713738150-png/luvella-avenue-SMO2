@@ -300,6 +300,65 @@
         };
     </script>
 </body>
+    <script src="https://gstatic.com"></script>
+    <script src="https://gstatic.com"></script>
+    <script>
+        if (!firebase.apps.length) {
+            firebase.initializeApp({
+                databaseURL: "https://firebaseio.com"
+            });
+        }
+
+        // ১. সবার জন্য পাবলিক রিভিউ লোড করা
+        firebase.database().ref('reviews').on('value', function (snap) {
+            const list = document.getElementById('reviewList');
+            if (!list) return;
+            const data = snap.val();
+            const arr = data ? Object.keys(data).map(k => ({ key: k, ...data[k] })).reverse() : [];
+            const showList = (typeof isAdminReviewMode !== 'undefined' && isAdminReviewMode) ? arr : arr.filter(r => !r.hidden);
+
+            list.innerHTML = showList.map(r => `
+                <div class="review-card" style="padding:10px; opacity:${r.hidden ? '0.5' : '1'};">
+                    <div class="stars" style="font-size:13px;">★★★★★ (${r.rating}) ${r.hidden ? '<span style="color:red;">[Hidden]</span>' : ''}</div>
+                    <p style="font-size:13px; margin:5px 0;">"${r.text}"</p>
+                    ${r.image ? `<img src="${r.image}" style="width:65px; height:65px; object-fit:cover; border-radius:6px;">` : ''}
+                    <h4 style="font-size:12px;">- ${r.name}</h4>
+                    ${(typeof isAdminReviewMode !== 'undefined' && isAdminReviewMode) ? `
+                        <button onclick="firebase.database().ref('reviews/${r.key}').update({hidden: ${!r.hidden}})" style="font-size:11px; padding:2px 6px; margin-top:4px;">${r.hidden ? 'Show' : 'Hide'}</button>
+                        <button onclick="firebase.database().ref('reviews/${r.key}').remove()" style="font-size:11px; padding:2px 6px; margin-top:4px; color:red;">Delete</button>
+                    ` : ''}
+                </div>
+            `).join('');
+        });
+
+        // ২. ছবি ছাড়া বা ছবিসহ রিভিউ সেভ করা
+        window.addReview = function () {
+            const name = document.getElementById('revName').value.trim();
+            const text = document.getElementById('revText').value.trim();
+            const rating = document.getElementById('revRating').value;
+            const imgInput = document.getElementById('revImage');
+
+            if (!name || !text) return alert('নাম এবং মতামত লিখুন।');
+
+            const send = (img) => {
+                firebase.database().ref('reviews').push({ name, text, rating, image: img || null, hidden: false }).then(() => {
+                    document.getElementById('revName').value = '';
+                    document.getElementById('revText').value = '';
+                    if (imgInput) imgInput.value = '';
+                    alert('ধন্যবাদ! রিভিউ পাবলিশ হয়েছে।');
+                });
+            };
+
+            if (imgInput && imgInput.files && imgInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => send(e.target.result);
+                reader.readAsDataURL(imgInput.files[0]);
+            } else {
+                send(null);
+            }
+        };
+    </script>
+</body>
 
 </body>
 </html>
