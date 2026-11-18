@@ -560,3 +560,64 @@ window.addReview = function () {
         saveToFirebase(null);
     }
 };
+// ১. সরাসরি confirmOrder ফাংশনটি আপডেট করা (১০০% কাজ করবে)
+window.confirmOrder = function () {
+    const name = document.getElementById('custName').value.trim();
+    const phone = document.getElementById('custPhone').value.trim();
+    const address = document.getElementById('custAddress').value.trim();
+    const payment = document.getElementById('paymentMethod').value;
+    const trxId = document.getElementById('trxId').value.trim();
+
+    if (!name || !phone || !address) {
+        alert('দয়া করে আপনার নাম, মোবাইল নম্বর এবং ঠিকানা লিখুন।');
+        return false;
+    }
+    if ((payment === 'bKash' || payment === 'Nagad') && !trxId) {
+        alert('দয়া করে বিকাশ বা নগদের Transaction ID (TrxID) লিখুন।');
+        return false;
+    }
+
+    const orderId = 'LUV-' + Math.floor(1000 + Math.random() * 9000);
+    const itemsList = (typeof currentOrderItems !== 'undefined' && currentOrderItems.length > 0) ? currentOrderItems : [];
+    const totalAmount = itemsList.reduce((sum, i) => sum + (i.price * i.qty), 0);
+    const orderDate = new Date().toLocaleDateString('bn-BD');
+
+    // অর্ডার রেকর্ড সেভ করা
+    let savedOrders = JSON.parse(localStorage.getItem('luvella_orders')) || [];
+    savedOrders.push({
+        orderId, name, phone, address, payment,
+        trxId: trxId || 'N/A', items: itemsList, totalAmount, date: orderDate,
+        status: 'অর্ডার কনফার্ম হয়েছে'
+    });
+    localStorage.setItem('luvella_orders', JSON.stringify(savedOrders));
+
+    // রিসিট বক্সে তথ্য বসানো
+    const receiptBox = document.getElementById('receiptDetails');
+    if (receiptBox) {
+        receiptBox.innerHTML = `
+            <p><strong>অর্ডার আইডি:</strong> ${orderId}</p>
+            <p><strong>তারিখ:</strong> ${orderDate}</p>
+            <p><strong>ক্রেতার নাম:</strong> ${name}</p>
+            <p><strong>মোবাইল:</strong> ${phone}</p>
+            <p><strong>ঠিকানা:</strong> ${address}</p>
+            <p><strong>পেমেন্ট:</strong> ${payment} ${trxId ? `(TrxID: ${trxId})` : ''}</p>
+            <hr style="margin:8px 0;">
+            ${itemsList.map(i => `<p>${i.name} × ${i.qty} = ${i.price * i.qty}৳</p>`).join('')}
+            <hr style="margin:8px 0;">
+            <p style="font-size:16px; color:#8B1E41;"><strong>সর্বমোট বিল: ${totalAmount}৳</strong></p>
+        `;
+    }
+
+    // history.back() এড়িয়ে সরাসরি অর্ডার বক্স বন্ধ করে রিসিট বক্স দেখানো
+    const orderModal = document.getElementById('orderModal');
+    const receiptModal = document.getElementById('receiptModal');
+    if (orderModal) orderModal.classList.remove('show');
+    if (receiptModal) receiptModal.classList.add('show');
+
+    return false;
+};
+
+// ২. ফর্ম সাবমিট হয়ে পেজ রিলোড হওয়া পুরোপুরি বন্ধ রাখা
+document.addEventListener('submit', function (e) {
+    e.preventDefault();
+});
