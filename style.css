@@ -1331,4 +1331,8 @@ background-clip: text;
     object-position: center center !important;
     transform: scale(1.22) !important; /* প্রজাপতি ও LA পুরোটা স্পষ্ট দেখাবে */
 }
+/* হেডার থেকে ট্র্যাক (Track) বাটন ও পপআপ সরিয়ে ফেলা */
+.track-btn, #trackModal {
+    display: none !important;
+}
 
