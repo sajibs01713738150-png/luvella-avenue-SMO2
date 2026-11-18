@@ -403,14 +403,18 @@ async function renderReviews() {
         console.log("Review load error:", err);
     }
 }
-
-// ২. নতুন রিভিউ ও ছবি অনলাইনে পাবলিকলি সেভ করা
+// ছবি ছাড়া অথবা ছবিসহ — উভয়ভাবেই পাবলিক রিভিউ পোস্ট করার সহজ ফাংশন
 function addReview() {
-    const orderIdInput = document.getElementById('revOrderId').value.trim().toUpperCase();
-    const name = document.getElementById('revName').value.trim();
-    const rating = document.getElementById('revRating').value;
-    const text = document.getElementById('revText').value.trim();
+    const orderIdEl = document.getElementById('revOrderId');
+    const nameEl = document.getElementById('revName');
+    const ratingEl = document.getElementById('revRating');
+    const textEl = document.getElementById('revText');
     const imageInput = document.getElementById('revImage');
+
+    const orderIdInput = orderIdEl ? orderIdEl.value.trim().toUpperCase() : '';
+    const name = nameEl ? nameEl.value.trim() : '';
+    const rating = ratingEl ? ratingEl.value : '5.0';
+    const text = textEl ? textEl.value.trim() : '';
 
     if (!name || !text) {
         alert('দয়া করে আপনার নাম এবং মতামত লিখুন।');
@@ -418,13 +422,14 @@ function addReview() {
     }
 
     let savedOrders = JSON.parse(localStorage.getItem('luvella_orders')) || [];
-    const isVerified = orderIdInput && savedOrders.some(o => o.orderId.toUpperCase() === orderIdInput);
+    const isVerified = orderIdInput && savedOrders.some(o => o.orderId && o.orderId.toUpperCase() === orderIdInput);
 
+    // অনলাইন ডাটাবেসে রিভিউ সেভ করার মূল অংশ
     const postToCloud = async (imgData) => {
         const newReview = {
-            name,
-            rating,
-            text,
+            name: name,
+            rating: rating,
+            text: text,
             verified: !!isVerified,
             image: imgData || null,
             hidden: false,
@@ -432,33 +437,38 @@ function addReview() {
         };
 
         try {
-            await fetch(`${FIREBASE_URL}/reviews.json`, {
+            const response = await fetch(`${FIREBASE_URL}/reviews.json`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newReview)
             });
 
-            document.getElementById('revOrderId').value = '';
-            document.getElementById('revName').value = '';
-            document.getElementById('revText').value = '';
+            if (!response.ok) {
+                throw new Error('Server response error');
+            }
+
+            if (orderIdEl) orderIdEl.value = '';
+            if (nameEl) nameEl.value = '';
+            if (textEl) textEl.value = '';
             if (imageInput) imageInput.value = '';
             
             renderReviews();
-            alert('ধন্যবাদ! আপনার রিভিউটি সবার জন্য পাবলিশ হয়েছে।');
+            alert('ধন্যবাদ! আপনার মূল্যবান রিভিউটি সবার জন্য পাবলিশ হয়েছে।');
         } catch (e) {
-            alert('নেটওয়ার্ক সমস্যার কারণে রিভিউ সেভ হয়নি, আবার চেষ্টা করুন।');
+            alert('রিভিউ সেভ হতে সমস্যা হচ্ছে। ইন্টারনেট সংযোগ চেক করে আবার চেষ্টা করুন।');
         }
     };
 
-    if (imageInput && imageInput.files && imageInput.files) {
+    // কাস্টমার ছবি সিলেক্ট করলে ছবি কম্প্রেস করে পাঠাবে, আর ছবি না দিলে সরাসরি টেক্সট রিভিউ পাঠাবে
+    if (imageInput && imageInput.files && imageInput.files.length > 0) {
         const reader = new FileReader();
         reader.onload = function (e) {
             const img = new Image();
             img.onload = function () {
                 const canvas = document.createElement('canvas');
                 const maxW = 350;
-                const scale = maxW / img.width;
-                canvas.width = maxW;
+                const scale = img.width > maxW ? (maxW / img.width) : 1;
+                canvas.width = img.width * scale;
                 canvas.height = img.height * scale;
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -468,28 +478,7 @@ function addReview() {
         };
         reader.readAsDataURL(imageInput.files);
     } else {
+        // ছবি না দিলেও সাথে সাথে রিভিউ পোস্ট হয়ে যাবে
         postToCloud(null);
     }
 }
-
-// ৩. অ্যাডমিন হিসেবে পাবলিক রিভিউ Hide বা Show করা
-async function toggleHideReview(fbKey, currentHiddenState) {
-    await fetch(`${FIREBASE_URL}/reviews/${fbKey}.json`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hidden: !currentHiddenState })
-    });
-    renderReviews();
-}
-
-// ৪. অ্যাডমিন হিসেবে রিভিউ ডিলিট করা
-async function deleteReview(fbKey) {
-    if (!confirm('আপনি কি নিশ্চিত এই রিভিউটি সবার জন্য চিরতরে মুছে ফেলতে চান?')) return;
-    await fetch(`${FIREBASE_URL}/reviews/${fbKey}.json`, {
-        method: 'DELETE'
-    });
-    renderReviews();
-}
-
-// পেজ লোড হলেই অনলাইন রিভিউ দেখাবে
-renderReviews();
