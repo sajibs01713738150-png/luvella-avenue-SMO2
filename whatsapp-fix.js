@@ -345,3 +345,151 @@ setInterval(function () {
         loveBtn.style.fontWeight = 'bold';
     });
 }, 300);
+// ==========================================
+// সবার জন্য পাবলিক অনলাইন রিভিউ সিস্টেম (Firebase)
+// ==========================================
+// নিচের কোটেশনের ভেতর আপনার Firebase Realtime Database লিংকটি বসান (শেষে / থাকবে না)
+const FIREBASE_URL = "https://console.firebase.google.com/project/luvella-reviews/database/luvella-reviews-default-rtdb/data/~2F";
+
+// ১. অনলাইন ডাটাবেস থেকে সব রিভিউ লোড করে সবার স্ক্রিনে দেখানো
+async function renderReviews() {
+    const reviewList = document.getElementById('reviewList');
+    if (!reviewList) return;
+
+    try {
+        const res = await fetch(`${FIREBASE_URL}/reviews.json`);
+        const data = await res.json();
+
+        let reviews = [];
+        if (data) {
+            reviews = Object.keys(data).map(key => ({
+                fbKey: key,
+                ...data[key]
+            })).reverse(); // নতুন রিভিউ সবার উপরে দেখাবে
+        }
+
+        const visibleReviews = isAdminReviewMode ? reviews : reviews.filter(r => !r.hidden);
+
+        if (visibleReviews.length === 0) {
+            reviewList.innerHTML = '';
+            reviewList.style.marginBottom = '0';
+            return;
+        }
+
+        reviewList.style.marginBottom = '15px';
+        reviewList.innerHTML = visibleReviews.map(r => `
+            <div class="review-card" style="padding: 10px; opacity: ${r.hidden ? '0.5' : '1'};">
+                <div class="stars" style="font-size: 13px;">
+                    ★★★★★ (${r.rating}) ${r.verified ? '<span style="color:green; font-size:11px;">✔ Verified Buyer</span>' : ''}
+                    ${r.hidden ? '<span style="color:red; font-size:11px;"> [Hidden]</span>' : ''}
+                </div>
+                <p style="font-size: 13px; margin: 5px 0;">"${r.text}"</p>
+                ${r.image ? `<img src="${r.image}" alt="Review Photo" onclick="openZoomImage('${r.image}')" style="width: 65px; height: 65px; object-fit: cover; border-radius: 6px; margin: 5px 0; cursor: zoom-in; border: 1px solid #ddd;">` : ''}
+                <h4 style="font-size: 12px;">- ${r.name}</h4>
+                
+                ${isAdminReviewMode ? `
+                    <div style="margin-top: 6px; display: flex; gap: 5px;">
+                        <button onclick="toggleHideReview('${r.fbKey}', ${!!r.hidden})" style="background:#f59e0b; color:#fff; border:none; padding:3px 7px; border-radius:4px; font-size:11px; cursor:pointer;">
+                            ${r.hidden ? '👁️ Show করুন' : '🙈 Hide করুন'}
+                        </button>
+                        <button onclick="deleteReview('${r.fbKey}')" style="background:#e11d48; color:#fff; border:none; padding:3px 7px; border-radius:4px; font-size:11px; cursor:pointer;">
+                            🗑️ মুছুন
+                        </button>
+                    </div>
+                ` : ''}
+            </div>
+        `).join('');
+    } catch (err) {
+        console.log("Review load error:", err);
+    }
+}
+
+// ২. নতুন রিভিউ ও ছবি অনলাইনে পাবলিকলি সেভ করা
+function addReview() {
+    const orderIdInput = document.getElementById('revOrderId').value.trim().toUpperCase();
+    const name = document.getElementById('revName').value.trim();
+    const rating = document.getElementById('revRating').value;
+    const text = document.getElementById('revText').value.trim();
+    const imageInput = document.getElementById('revImage');
+
+    if (!name || !text) {
+        alert('দয়া করে আপনার নাম এবং মতামত লিখুন।');
+        return;
+    }
+
+    let savedOrders = JSON.parse(localStorage.getItem('luvella_orders')) || [];
+    const isVerified = orderIdInput && savedOrders.some(o => o.orderId.toUpperCase() === orderIdInput);
+
+    const postToCloud = async (imgData) => {
+        const newReview = {
+            name,
+            rating,
+            text,
+            verified: !!isVerified,
+            image: imgData || null,
+            hidden: false,
+            createdAt: Date.now()
+        };
+
+        try {
+            await fetch(`${FIREBASE_URL}/reviews.json`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newReview)
+            });
+
+            document.getElementById('revOrderId').value = '';
+            document.getElementById('revName').value = '';
+            document.getElementById('revText').value = '';
+            if (imageInput) imageInput.value = '';
+            
+            renderReviews();
+            alert('ধন্যবাদ! আপনার রিভিউটি সবার জন্য পাবলিশ হয়েছে।');
+        } catch (e) {
+            alert('নেটওয়ার্ক সমস্যার কারণে রিভিউ সেভ হয়নি, আবার চেষ্টা করুন।');
+        }
+    };
+
+    if (imageInput && imageInput.files && imageInput.files) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = new Image();
+            img.onload = function () {
+                const canvas = document.createElement('canvas');
+                const maxW = 350;
+                const scale = maxW / img.width;
+                canvas.width = maxW;
+                canvas.height = img.height * scale;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                postToCloud(canvas.toDataURL('image/jpeg', 0.65));
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(imageInput.files);
+    } else {
+        postToCloud(null);
+    }
+}
+
+// ৩. অ্যাডমিন হিসেবে পাবলিক রিভিউ Hide বা Show করা
+async function toggleHideReview(fbKey, currentHiddenState) {
+    await fetch(`${FIREBASE_URL}/reviews/${fbKey}.json`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hidden: !currentHiddenState })
+    });
+    renderReviews();
+}
+
+// ৪. অ্যাডমিন হিসেবে রিভিউ ডিলিট করা
+async function deleteReview(fbKey) {
+    if (!confirm('আপনি কি নিশ্চিত এই রিভিউটি সবার জন্য চিরতরে মুছে ফেলতে চান?')) return;
+    await fetch(`${FIREBASE_URL}/reviews/${fbKey}.json`, {
+        method: 'DELETE'
+    });
+    renderReviews();
+}
+
+// পেজ লোড হলেই অনলাইন রিভিউ দেখাবে
+renderReviews();
