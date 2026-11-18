@@ -386,5 +386,5 @@ const products = [
 
 
 
-
+];
 
