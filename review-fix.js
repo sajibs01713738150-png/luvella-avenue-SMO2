@@ -1,108 +1,80 @@
 (function () {
-    // বাংলাদেশ থেকে ১০০% ফাস্ট কাজ করা পাবলিক ক্লাউড স্টোরেজ (JSONBlob API)
-    const CLOUD_API = "https://jsonblob.com";
-
-    // ১. সবার স্ক্রিনে পাবলিক রিভিউ লোড করে দেখানো
-    function loadPublicReviews() {
+    // ১. কাস্টমারের নিজের দেওয়া রিভিউগুলো দেখানো
+    function showLocalReviews() {
         const list = document.getElementById('reviewList');
         if (!list) return;
 
-        fetch(CLOUD_API, {
-            method: 'GET',
-            headers: { 'Accept': 'application/json' }
-        })
-        .then(res => res.ok ? res.json() : { reviews: [] })
-        .then(data => {
-            const allReviews = Array.isArray(data.reviews) ? data.reviews : [];
-            const isAdmin = (typeof isAdminReviewMode !== 'undefined' && isAdminReviewMode);
-            const visibleReviews = isAdmin ? allReviews : allReviews.filter(r => !r.hidden);
+        let reviews = JSON.parse(localStorage.getItem('luvella_reviews')) || [];
+        const isAdmin = (typeof isAdminReviewMode !== 'undefined' && isAdminReviewMode);
+        const visibleReviews = isAdmin ? reviews : reviews.filter(r => !r.hidden);
 
-            if (visibleReviews.length === 0) {
-                list.innerHTML = '';
-                list.style.marginBottom = '0';
-                return;
-            }
+        if (visibleReviews.length === 0) {
+            list.innerHTML = '';
+            list.style.marginBottom = '0';
+            return;
+        }
 
-            list.style.marginBottom = '15px';
-            list.innerHTML = visibleReviews.map((r, index) => `
-                <div class="review-card" style="padding:10px; opacity:${r.hidden ? '0.5' : '1'};">
-                    <div class="stars" style="font-size:13px;">
-                        ★★★★★ (${r.rating}) ${r.hidden ? '<span style="color:red;">[Hidden]</span>' : ''}
-                    </div>
-                    <p style="font-size:13px; margin:5px 0;">"${r.text}"</p>
-                    ${r.image ? `<img src="${r.image}" onclick="openZoomImage('${r.image}')" style="width:65px; height:65px; object-fit:cover; border-radius:6px; cursor:zoom-in; border:1px solid #ddd;">` : ''}
-                    <h4 style="font-size:12px;">- ${r.name}</h4>
-                    ${isAdmin ? `
-                        <div style="margin-top:5px;">
-                            <button onclick="adminUpdateReview(${r.id}, 'toggle')" style="background:#f59e0b; color:#fff; border:none; padding:2px 7px; border-radius:4px; font-size:11px; cursor:pointer;">${r.hidden ? 'Show' : 'Hide'}</button>
-                            <button onclick="adminUpdateReview(${r.id}, 'delete')" style="background:#e11d48; color:#fff; border:none; padding:2px 7px; border-radius:4px; font-size:11px; cursor:pointer;">Delete</button>
-                        </div>
-                    ` : ''}
+        list.style.marginBottom = '15px';
+        list.innerHTML = visibleReviews.map(r => `
+            <div class="review-card" style="padding:10px; opacity:${r.hidden ? '0.5' : '1'};">
+                <div class="stars" style="font-size:13px;">
+                    ★★★★★ (${r.rating}) ${r.verified ? '<span style="color:green; font-size:11px;">✔ Verified Buyer</span>' : ''}
+                    ${r.hidden ? '<span style="color:red; font-size:11px;"> [Hidden]</span>' : ''}
                 </div>
-            `).join('');
-        })
-        .catch(() => {
-            // ব্যাকআপ হিসেবে লোকাল রিভিউ দেখাবে
-            const local = JSON.parse(localStorage.getItem('luvella_reviews')) || [];
-            if (local.length > 0 && list) {
-                list.innerHTML = local.map(r => `<div class="review-card" style="padding:10px;"><div class="stars">★★★★★ (${r.rating})</div><p>"${r.text}"</p><h4>- ${r.name}</h4></div>`).join('');
-            }
-        });
+                <p style="font-size:13px; margin:5px 0;">"${r.text}"</p>
+                ${r.image ? `<img src="${r.image}" onclick="openZoomImage('${r.image}')" style="width:65px; height:65px; object-fit:cover; border-radius:6px; cursor:zoom-in; border:1px solid #ddd;">` : ''}
+                <h4 style="font-size:12px;">- ${r.name}</h4>
+                ${isAdmin ? `
+                    <div style="margin-top:5px;">
+                        <button onclick="localToggleReview(${r.id})" style="background:#f59e0b; color:#fff; border:none; padding:2px 7px; border-radius:4px; font-size:11px; cursor:pointer;">${r.hidden ? 'Show' : 'Hide'}</button>
+                        <button onclick="localDeleteReview(${r.id})" style="background:#e11d48; color:#fff; border:none; padding:2px 7px; border-radius:4px; font-size:11px; cursor:pointer;">Delete</button>
+                    </div>
+                ` : ''}
+            </div>
+        `).join('');
     }
 
-    // ২. নতুন রিভিউ পাবলিকলি সেভ করা
+    // ২. ছবি ছাড়া অথবা ছবিসহ রিভিউ পোস্ট করা (কোনো নেটওয়ার্ক এরর ছাড়াই)
     window.addReview = function () {
-        const name = document.getElementById('revName').value.trim();
-        const text = document.getElementById('revText').value.trim();
-        const rating = document.getElementById('revRating').value;
+        const orderIdEl = document.getElementById('revOrderId');
+        const nameEl = document.getElementById('revName');
+        const ratingEl = document.getElementById('revRating');
+        const textEl = document.getElementById('revText');
         const imgInput = document.getElementById('revImage');
+
+        const orderId = orderIdEl ? orderIdEl.value.trim().toUpperCase() : '';
+        const name = nameEl ? nameEl.value.trim() : '';
+        const rating = ratingEl ? ratingEl.value : '5.0';
+        const text = textEl ? textEl.value.trim() : '';
 
         if (!name || !text) {
             alert('দয়া করে আপনার নাম এবং মতামত লিখুন।');
             return;
         }
 
-        const saveToCloud = async (imgData) => {
-            try {
-                // আগের রিভিউগুলো আনা
-                let currentReviews = [];
-                const getRes = await fetch(CLOUD_API, { headers: { 'Accept': 'application/json' } });
-                if (getRes.ok) {
-                    const existingData = await getRes.json();
-                    if (Array.isArray(existingData.reviews)) currentReviews = existingData.reviews;
-                }
+        let savedOrders = JSON.parse(localStorage.getItem('luvella_orders')) || [];
+        const isVerified = orderId && savedOrders.some(o => o.orderId && o.orderId.toUpperCase() === orderId);
 
-                // নতুন রিভিউ সবার উপরে যোগ করা
-                const newEntry = {
-                    id: Date.now(),
-                    name: name,
-                    text: text,
-                    rating: rating,
-                    image: imgData || null,
-                    hidden: false
-                };
-                currentReviews.unshift(newEntry);
+        const saveReview = (imgData) => {
+            let reviews = JSON.parse(localStorage.getItem('luvella_reviews')) || [];
+            reviews.unshift({
+                id: Date.now(),
+                name: name,
+                rating: rating,
+                text: text,
+                verified: !!isVerified,
+                image: imgData || null,
+                hidden: false
+            });
+            localStorage.setItem('luvella_reviews', JSON.stringify(reviews));
 
-                // ক্লাউডে সেভ করা
-                const putRes = await fetch(CLOUD_API, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({ reviews: currentReviews })
-                });
+            if (orderIdEl) orderIdEl.value = '';
+            if (nameEl) nameEl.value = '';
+            if (textEl) textEl.value = '';
+            if (imgInput) imgInput.value = '';
 
-                if (!putRes.ok) throw new Error('Save failed');
-
-                document.getElementById('revName').value = '';
-                document.getElementById('revText').value = '';
-                if (imgInput) imgInput.value = '';
-                loadPublicReviews();
-                alert('ধন্যবাদ! আপনার রিভিউটি সবার জন্য পাবলিশ হয়েছে।');
-            } catch (err) {
-                alert('সমস্যা হয়েছে: ' + err.message);
-            }
+            showLocalReviews();
+            alert('ধন্যবাদ! আপনার মূল্যবান মতামতটি সফলভাবে যুক্ত হয়েছে।');
         };
 
         if (imgInput && imgInput.files && imgInput.files.length > 0) {
@@ -111,41 +83,36 @@
                 const img = new Image();
                 img.onload = function () {
                     const canvas = document.createElement('canvas');
-                    const scale = img.width > 300 ? (300 / img.width) : 1;
+                    const scale = img.width > 350 ? (350 / img.width) : 1;
                     canvas.width = img.width * scale;
                     canvas.height = img.height * scale;
                     canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                    saveToCloud(canvas.toDataURL('image/jpeg', 0.6));
+                    saveReview(canvas.toDataURL('image/jpeg', 0.65));
                 };
                 img.src = e.target.result;
             };
-            reader.readAsDataURL(imgInput.files);
+            reader.readAsDataURL(imgInput.files[0]);
         } else {
-            saveToCloud(null);
+            saveReview(null);
         }
     };
 
-    // ৩. অ্যাডমিন হিসেবে রিভিউ Hide বা Delete করা
-    window.adminUpdateReview = async function (targetId, action) {
-        if (action === 'delete' && !confirm('রিভিউটি চিরতরে মুছে ফেলবেন?')) return;
-        const getRes = await fetch(CLOUD_API, { headers: { 'Accept': 'application/json' } });
-        const data = await getRes.json();
-        let list = Array.isArray(data.reviews) ? data.reviews : [];
-
-        if (action === 'toggle') {
-            list = list.map(r => r.id === targetId ? { ...r, hidden: !r.hidden } : r);
-        } else if (action === 'delete') {
-            list = list.filter(r => r.id !== targetId);
-        }
-
-        await fetch(CLOUD_API, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify({ reviews: list })
-        });
-        loadPublicReviews();
+    // ৩. অ্যাডমিন হাইড ও ডিলিট কন্ট্রোল
+    window.localToggleReview = function (id) {
+        let reviews = JSON.parse(localStorage.getItem('luvella_reviews')) || [];
+        reviews = reviews.map(r => r.id === id ? { ...r, hidden: !r.hidden } : r);
+        localStorage.setItem('luvella_reviews', JSON.stringify(reviews));
+        showLocalReviews();
     };
 
-    loadPublicReviews();
-    window.renderReviews = loadPublicReviews;
+    window.localDeleteReview = function (id) {
+        if (!confirm('রিভিউটি মুছে ফেলবেন?')) return;
+        let reviews = JSON.parse(localStorage.getItem('luvella_reviews')) || [];
+        reviews = reviews.filter(r => r.id !== id);
+        localStorage.setItem('luvella_reviews', JSON.stringify(reviews));
+        showLocalReviews();
+    };
+
+    showLocalReviews();
+    window.renderReviews = showLocalReviews;
 })();
