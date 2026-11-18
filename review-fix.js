@@ -174,3 +174,49 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 });
+// ১. "অর্ডার কনফার্ম ও রিসিট প্রিন্ট" বাটনটি সরিয়ে ফেলা
+(function hideConfirmAndEnableDirectWhatsApp() {
+    const hideBtn = () => {
+        const confirmBtn = document.querySelector('#orderModal .confirm-order-btn');
+        if (confirmBtn) confirmBtn.style.display = 'none';
+    };
+    hideBtn();
+    setInterval(hideBtn, 300);
+
+    // ২. কাস্টমার ফর্ম পূরণ করে WhatsApp বাটনে চাপ দিলেই সরাসরি অর্ডার সেভ হয়ে মেসেজ যাবে
+    window.orderViaWhatsApp = function (waNumber) {
+        const name = document.getElementById('custName').value.trim();
+        const phone = document.getElementById('custPhone').value.trim();
+        const address = document.getElementById('custAddress').value.trim();
+        const payment = document.getElementById('paymentMethod').value;
+        const trxId = document.getElementById('trxId').value.trim();
+
+        if (!name || !phone || !address) {
+            alert('দয়া করে আগে আপনার নাম, মোবাইল নম্বর এবং ঠিকানা লিখুন!');
+            return;
+        }
+        if ((payment === 'bKash' || payment === 'Nagad') && !trxId) {
+            alert('দয়া করে বিকাশ বা নগদের Transaction ID (TrxID) লিখুন!');
+            return;
+        }
+
+        const orderId = 'LUV-' + Math.floor(1000 + Math.random() * 9000);
+        const itemsList = (typeof currentOrderItems !== 'undefined' && currentOrderItems.length > 0) ? currentOrderItems : [];
+        const totalAmount = itemsList.reduce((sum, i) => sum + (i.price * i.qty), 0);
+        const orderDate = new Date().toLocaleDateString('bn-BD');
+
+        // কাস্টমার যেন পরবর্তীতে রিভিউয়ে এই অর্ডার আইডি ব্যবহার করতে পারে তাই সেভ রাখা
+        let savedOrders = JSON.parse(localStorage.getItem('luvella_orders')) || [];
+        savedOrders.push({
+            orderId, name, phone, address, payment,
+            trxId: trxId || 'N/A', items: itemsList, totalAmount, date: orderDate,
+            status: 'অর্ডার কনফার্ম হয়েছে'
+        });
+        localStorage.setItem('luvella_orders', JSON.stringify(savedOrders));
+
+        const itemText = itemsList.map(i => `${i.name} (${i.qty}টি - ${i.price * i.qty}৳)`).join(', ');
+        const message = `আসসালামু আলাইকুম Luvella Avenue,\nআমি একটি অর্ডার করতে চাই:\n\n🆔 অর্ডার আইডি: ${orderId}\nপ্রোডাক্ট: ${itemText}\nমোট বিল: ${totalAmount}৳\nপেমেন্ট: ${payment} ${trxId ? `(TrxID: ${trxId})` : ''}\n\n👤 ক্রেতার তথ্য:\nনাম: ${name}\nমোবাইল: ${phone}\nঠিকানা: ${address}`;
+
+        window.location.href = "whatsapp://send?phone=" + waNumber + "&text=" + encodeURIComponent(message);
+    };
+})();
