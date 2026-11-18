@@ -174,6 +174,40 @@ const products = [
         rating: 4.7,
         image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-jj62Qu2HslbSpdK2xrTJfTZZgtLgQgngdvibnaUd.jpg?raw=true"
     },
+    {
+        id: 118,
+        name:"Ladies Sherpa Hoddie",
+        category: "ব্যাগ ও ফ্যাশন", 
+        isSpecialOffer: true,
+        price: 670,
+        oldPrice:1000, 
+        rating: 4.9,
+        image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-MiZOZqRp3E1KGokBog3sEPFQWXgghlt1X6jV9vzW.jpg?raw=true"
+    },
+
+    {
+        id: 119,
+        name:"Ladies Sherpa Hoddie" ,
+        category:"ব্যাগ ও ফ্যাশন", 
+        isSpecialOffer: true,
+        price:670,
+        oldPrice:1000,
+        rating: 4.9,
+        image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-Xlhrsd715xV5LSrYeHKRSMTHqn1ouyOE8hAp78Ps.jpg?raw=true"
+    },
+
+
+    {
+        id: 120,
+        name:"Ladies Sherpa Hoddie",
+        category:"ব্যাগ ও ফ্যাশন", 
+        isSpecialOffer: true,
+        price: 670,
+        oldPrice:1000, 
+        rating: 4.9,
+        image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-tk6RidPAURYYFtAGv4OnChQ6JuixwKJ7eiHxtArn.jpg?raw=true"
+    },
+    
     
     
 
