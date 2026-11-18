@@ -34,7 +34,7 @@ const products = [
         name:"Premium Ladies Winter Shawl",
         category: "ব্যাগ ও ফ্যাশন",
         isSpecialOffer:true, 
-        price: 649,
+        price: 670,
         oldPrice:900,
         rating: 4.8,
         image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-U7QMxQD5GlMo7pZ05q7K6tpII2kBlzvYWQyldbpy.jpg?raw=true"
@@ -44,7 +44,7 @@ const products = [
         name:"Premium Ladies Winter Shawl",
         category: "ব্যাগ ও ফ্যাশন",
         isSpecialOffer: true,
-        price: 649,
+        price: 699,
         oldPrice: 900,
         rating: 4.8,
         image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-i0Nge8fjgHDdzgKEoUD4K9Ipf11xZvZX3sXxnFn8%20(1).jpg?raw=true"
@@ -54,7 +54,7 @@ const products = [
         name:"Premium Ladies Winter Shawl " ,
         category: "ব্যাগ ও ফ্যাশন",
         isSpecialOffer: true,
-        price: 649,
+        price: 699,
         oldPrice: 900,
         rating: 4.8,
         image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-iBAMDiOgTBnch9D0HhEEFXG43zkhgIgnjCrLJOMq.jpg?raw=true"
@@ -137,7 +137,7 @@ const products = [
         name:"Trendy Stylish Ladies Hoodie", 
         category: "ব্যাগ ও ফ্যাশন",
         isSpecialOffer: true,
-        price:440,
+        price:450,
         oldPrice:700, 
         rating: 4.8,
         image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-jiqAbV5EMPMDKTCUuRy5iAhRlbfJjIobzxq2fePN.jpg?raw=true"
