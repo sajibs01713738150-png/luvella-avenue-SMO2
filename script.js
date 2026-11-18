@@ -389,36 +389,66 @@ function renderReviews() {
     `).join('');
 }
 
-// শুধুমাত্র অর্ডার করা কাস্টমাররাই রিভিউ দিতে পারবে
+// অর্ডার আইডি ছাড়াই বা অর্ডার আইডিসহ ছবিসহ রিভিউ পোস্ট করা
 function addReview() {
     const orderIdInput = document.getElementById('revOrderId').value.trim().toUpperCase();
     const name = document.getElementById('revName').value.trim();
     const rating = document.getElementById('revRating').value;
     const text = document.getElementById('revText').value.trim();
+    const imageInput = document.getElementById('revImage');
 
-    if (!orderIdInput || !name || !text) {
-        alert('দয়া করে অর্ডার আইডি, আপনার নাম এবং মতামত লিখুন।');
+    if (!name || !text) {
+        alert('দয়া করে আপনার নাম এবং মতামত লিখুন।');
         return;
     }
 
-    // চেক করা হচ্ছে এই অর্ডার আইডি দিয়ে আসলেই কেনা হয়েছে কি না
+    // চেক করা হচ্ছে অর্ডার আইডি থাকলে সেটি আসল ক্রেতার কি না
     let savedOrders = JSON.parse(localStorage.getItem('luvella_orders')) || [];
-    const isValidBuyer = savedOrders.some(o => o.orderId === orderIdInput);
+    const isVerified = orderIdInput && savedOrders.some(o => o.orderId.toUpperCase() === orderIdInput);
 
-    if (!isValidBuyer) {
-        alert('দুঃখিত! শুধুমাত্র আমাদের ওয়েবসাইট থেকে অর্ডার করা ক্রেতারাই সঠিক Order ID দিয়ে রিভিউ দিতে পারবেন।');
-        return;
+    const saveReviewData = (imgData) => {
+        let reviews = JSON.parse(localStorage.getItem('luvella_reviews')) || [];
+        reviews.unshift({
+            id: Date.now(),
+            name,
+            rating,
+            text,
+            verified: isVerified,
+            image: imgData || null,
+            hidden: false
+        });
+        localStorage.setItem('luvella_reviews', JSON.stringify(reviews));
+        renderReviews();
+
+        document.getElementById('revOrderId').value = '';
+        document.getElementById('revName').value = '';
+        document.getElementById('revText').value = '';
+        if (imageInput) imageInput.value = '';
+        alert('ধন্যবাদ! আপনার মূল্যবান মতামতটি যুক্ত হয়েছে।');
+    };
+
+    if (imageInput && imageInput.files && imageInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = new Image();
+            img.onload = function () {
+                const canvas = document.createElement('canvas');
+                const maxW = 400;
+                const scale = maxW / img.width;
+                canvas.width = maxW;
+                canvas.height = img.height * scale;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                saveReviewData(canvas.toDataURL('image/jpeg', 0.7));
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(imageInput.files[0]);
+    } else {
+        saveReviewData(null);
     }
-
-    savedReviews.unshift({ name, rating, text });
-    localStorage.setItem('luvella_reviews', JSON.stringify(savedReviews));
-    renderReviews();
-
-    document.getElementById('revOrderId').value = '';
-    document.getElementById('revName').value = '';
-    document.getElementById('revText').value = '';
-    alert('ধন্যবাদ! আপনার ভেরিফায়েড রিভিউটি সফলভাবে যুক্ত হয়েছে।');
 }
+
 
 // পেজ লোড হওয়ার সাথে সাথে রিভিউ লোড করা
 document.addEventListener('DOMContentLoaded', renderReviews);
