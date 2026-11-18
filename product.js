@@ -92,7 +92,7 @@ const products = [
     },
  {
         id: 110,
-        name:"Elegant Stylish Baby Hoodie Set" 
+        name:"Elegant Stylish Baby Hoodie Set", 
         category: "ব্যাগ ও ফ্যাশন",
         isSpecialOffer: true,
         price: 499,
@@ -113,7 +113,7 @@ const products = [
     
  {
         id: 112,
-        name:"Trendy Stylish Ladies Hoodie" 
+        name:"Trendy Stylish Ladies Hoodie",
         category:  "ব্যাগ ও ফ্যাশন",
         isSpecialOffer: true,
         price:480,
@@ -123,7 +123,7 @@ const products = [
     },
     {
         id: 113,
-        name:"Ladies Stylish Denim Jacket" 
+        name:"Ladies Stylish Denim Jacket" ,
         category: "ব্যাগ ও ফ্যাশন",
         isSpecialOffer: true,
         price: 720,
