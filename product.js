@@ -17,6 +17,6 @@ const products = [
         price: 450,
         oldPrice: 650,
         rating: 4.7,
-        image:"001-Cv9uRwkqrSLrrCWgsnSC79Fmf90P8CrhtyuV5RDC.jpg ",
+        image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-Cv9uRwkqrSLrrCWgsnSC79Fmf90P8CrhtyuV5RDC.jpg?raw=true ",
      }
     ];
