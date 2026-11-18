@@ -132,9 +132,50 @@ const products = [
         image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-oSHCttJluuWgDyQgyau0jSEF8CtIYxThohtfKhf6.jpg?raw=true"
     },
     
-
-
-
+{
+        id: 114,
+        name:"Trendy Stylish Ladies Hoodie", 
+        category: "ব্যাগ ও ফ্যাশন",
+        isSpecialOffer: true,
+        price:440,
+        oldPrice:700, 
+        rating: 4.8,
+        image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-jiqAbV5EMPMDKTCUuRy5iAhRlbfJjIobzxq2fePN.jpg?raw=true"
+    },
+    
+{
+        id: 115,
+        name:"Stylish Kids Hoodie Set",
+        category: "ব্যাগ ও ফ্যাশন",
+        isSpecialOffer: true,
+        price: 520,
+        oldPrice:750, 
+        rating: 4.9,
+        image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-5lVIjOCuwsYJTczuZQgZIYjUC21WmgVArwa7tV4f.jpg?raw=true"
+    },
+    
+{
+        id: 116,
+        name:"Western Co-ord Set",
+        category: "ব্যাগ ও ফ্যাশন",
+        isSpecialOffer: true,
+        price:540, 
+        oldPrice:750, 
+        rating: 4.7,
+        image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-OQnWaI2pMYILXr4jMMIFkOxx9krv5qtmqFkcSo8I.jpg?raw=true"
+},
+{
+        id: 117,
+        name: "Elegant Stylish Baby Hoodie Set",
+        category:"ব্যাগ ও ফ্যাশন", 
+        isSpecialOffer: true,
+        price:520, 
+        oldPrice:720, 
+        rating: 4.7,
+        image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-jj62Qu2HslbSpdK2xrTJfTZZgtLgQgngdvibnaUd.jpg?raw=true"
+    },
+    
+    
 
 
 
