@@ -482,3 +482,81 @@ function addReview() {
         postToCloud(null);
     }
 }
+// সরাসরি Firebase ডাটাবেসে পাবলিক রিভিউ সেভ করার স্থায়ী ফাংশন
+window.addReview = function () {
+    const DB_URL = "https://firebaseio.com";
+
+    const orderIdEl = document.getElementById('revOrderId');
+    const nameEl = document.getElementById('revName');
+    const ratingEl = document.getElementById('revRating');
+    const textEl = document.getElementById('revText');
+    const imageInput = document.getElementById('revImage');
+
+    const orderIdInput = orderIdEl ? orderIdEl.value.trim().toUpperCase() : '';
+    const name = nameEl ? nameEl.value.trim() : '';
+    const rating = ratingEl ? ratingEl.value : '5.0';
+    const text = textEl ? textEl.value.trim() : '';
+
+    if (!name || !text) {
+        alert('দয়া করে আপনার নাম এবং মতামত লিখুন।');
+        return;
+    }
+
+    let savedOrders = JSON.parse(localStorage.getItem('luvella_orders')) || [];
+    const isVerified = orderIdInput && savedOrders.some(o => o.orderId && o.orderId.toUpperCase() === orderIdInput);
+
+    const saveToFirebase = async (imgData) => {
+        const newReview = {
+            name: name,
+            rating: rating,
+            text: text,
+            verified: !!isVerified,
+            image: imgData || null,
+            hidden: false,
+            createdAt: Date.now()
+        };
+
+        try {
+            const response = await fetch(DB_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newReview)
+            });
+
+            if (!response.ok) {
+                throw new Error('HTTP Error: ' + response.status);
+            }
+
+            if (orderIdEl) orderIdEl.value = '';
+            if (nameEl) nameEl.value = '';
+            if (textEl) textEl.value = '';
+            if (imageInput) imageInput.value = '';
+            
+            if (typeof renderReviews === 'function') renderReviews();
+            alert('ধন্যবাদ! আপনার রিভিউটি সবার জন্য পাবলিশ হয়েছে।');
+        } catch (err) {
+            alert('সমস্যা: ' + err.message);
+        }
+    };
+
+    if (imageInput && imageInput.files && imageInput.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = new Image();
+            img.onload = function () {
+                const canvas = document.createElement('canvas');
+                const maxW = 350;
+                const scale = img.width > maxW ? (maxW / img.width) : 1;
+                canvas.width = img.width * scale;
+                canvas.height = img.height * scale;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                saveToFirebase(canvas.toDataURL('image/jpeg', 0.65));
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(imageInput.files);
+    } else {
+        saveToFirebase(null);
+    }
+};
