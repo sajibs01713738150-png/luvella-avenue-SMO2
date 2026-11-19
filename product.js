@@ -264,7 +264,7 @@ const products = [
         image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-1HVLyqK4SEa8JutCdX2fRW3MvsX8rZfzkW0cHdDj.jpg?raw=true"
     },
  {
-        id: 126
+        id: 126,
         name: "premium quality winter hoodies for men's",
         category: "ব্যাগ ও ফ্যাশন", 
         isSpecialOffer: true,
