@@ -223,7 +223,7 @@ const products = [
         name:"Polyester Full Slevee T-Shirt For Mens" ,
         category: "ব্যাগ ও ফ্যাশন",
         isSpecialOffer: true,
-        price: 190,
+        price: 170,
         oldPrice: 350,
         rating: 4.8,
         image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-pexKrrz2FSEcibJi6UJ6W7ue7pUYlL73SMFHabl2.jpg?raw=true"
