@@ -253,8 +253,26 @@ const products = [
         image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-WdN0XzxS7ZUbzsUpS4r58rgGa9ySVTL1i7ZyMXhX.jpg?raw=true"
     },
 
-
-
+ {
+        id: 125,
+        name: "premium quality winter hoodies for men's",
+        category:"ব্যাগ ও ফ্যাশন", 
+        isSpecialOffer: true,
+        price: 520,
+        oldPrice:800, 
+        rating: 4.7,
+        image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-1HVLyqK4SEa8JutCdX2fRW3MvsX8rZfzkW0cHdDj.jpg?raw=true"
+    },
+ {
+        id: 126
+        name: "premium quality winter hoodies for men's",
+        category: "ব্যাগ ও ফ্যাশন", 
+        isSpecialOffer: true,
+        price: 520,
+        oldPrice:800, 
+        rating: 4.8,
+        image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-XdstCL4LDM4h9FhGaSFhFtoPhJ4yWuLhpTtFeJpo.jpg?raw=true"
+    },
 
 
 
