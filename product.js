@@ -448,4 +448,18 @@ const products = [
 
 
 ];
+const ADULT_SIZES = ["M", "L", "XL", "XXL"];
+const KIDS_SIZES  = ["2-3 Year", "4-5 Year", "6-7 Year", "8-9 Year"];
+
+const sizeMap = {
+    101: ADULT_SIZES, 102: ADULT_SIZES, 103: ADULT_SIZES,
+    107: ADULT_SIZES, 108: ADULT_SIZES, 109: ADULT_SIZES,
+    112: ADULT_SIZES, 113: ADULT_SIZES, 114: ADULT_SIZES,
+    116: ADULT_SIZES, 118: ADULT_SIZES, 119: ADULT_SIZES,
+    120: ADULT_SIZES, 121: ADULT_SIZES, 122: ADULT_SIZES,
+    123: ADULT_SIZES,
+    110: KIDS_SIZES, 111: KIDS_SIZES, 115: KIDS_SIZES, 117: KIDS_SIZES
+};
+
+products.forEach(p => { if (sizeMap[p.id]) p.sizes = sizeMap[p.id]; });
 

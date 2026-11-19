@@ -199,7 +199,11 @@ document.addEventListener("DOMContentLoaded", function () {
             alert('দয়া করে বিকাশ বা নগদের Transaction ID (TrxID) লিখুন!');
             return;
         }
-
+        const missingSize = (typeof currentOrderItems !== 'undefined' ? currentOrderItems : []).find(i => i.sizes && i.sizes.length && !i.selectedSize);
+        if (missingSize) {
+            alert('দয়া করে "' + missingSize.name + '" এর সাইজ সিলেক্ট করুন!');
+            return;
+        }
         const orderId = 'LUV-' + Math.floor(1000 + Math.random() * 9000);
         const itemsList = (typeof currentOrderItems !== 'undefined' && currentOrderItems.length > 0) ? currentOrderItems : [];
         const totalAmount = itemsList.reduce((sum, i) => sum + (i.price * i.qty), 0);
@@ -214,7 +218,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         localStorage.setItem('luvella_orders', JSON.stringify(savedOrders));
 
-        const itemText = itemsList.map(i => `${i.name} (${i.qty}টি - ${i.price * i.qty}৳)`).join(', ');
+        const itemText = itemsList.map(i => `${i.name}${i.selectedSize ? ' [সাইজ: ' + i.selectedSize + ']' : ''} (${i.qty}টি - ${i.price * i.qty}৳)`).join(', ');
         const message = `আসসালামু আলাইকুম Luvella Avenue,\nআমি একটি অর্ডার করতে চাই:\n\n🆔 অর্ডার আইডি: ${orderId}\nপ্রোডাক্ট: ${itemText}\nমোট বিল: ${totalAmount}৳\nপেমেন্ট: ${payment} ${trxId ? `(TrxID: ${trxId})` : ''}\n\n👤 ক্রেতার তথ্য:\nনাম: ${name}\nমোবাইল: ${phone}\nঠিকানা: ${address}`;
 
         window.location.href = "whatsapp://send?phone=" + waNumber + "&text=" + encodeURIComponent(message);
