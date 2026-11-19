@@ -273,7 +273,16 @@ const products = [
         rating: 4.8,
         image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-XdstCL4LDM4h9FhGaSFhFtoPhJ4yWuLhpTtFeJpo.jpg?raw=true"
     },
-
+ {
+        id: 127,
+        name: "Stylish Design Winter Hoodie",
+        category: "ব্যাগ ও ফ্যাশন", 
+        isSpecialOffer: true,
+        price: 499,
+        oldPrice: 800,
+        rating: 4.8,
+        image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-FXocU5osTKrJ1dYzFKqfpFY4uSzKbMDchz3DV9XG.jpg?raw=true"
+    },
 
 
 
