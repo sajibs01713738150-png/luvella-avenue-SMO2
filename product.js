@@ -75,7 +75,7 @@ const products = [
         name:"Gents Hoodie for Winter",
         category: "ব্যাগ ও ফ্যাশন",
         isSpecialOffer: true,
-        price:499,
+        price:460,
         oldPrice:750,
         rating: 4.9,
         image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-8b3jXQZb51PQ8JlpoQTVdYx4YSuo1VrCT4e7e9rt.jpg?raw=true"
@@ -208,7 +208,16 @@ const products = [
         image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-tk6RidPAURYYFtAGv4OnChQ6JuixwKJ7eiHxtArn.jpg?raw=true"
     },
     
-    
+     {
+        id: 121,
+        name: "Gents Hoodie for Winter",
+        category: "ব্যাগ ও ফ্যাশন",
+        isSpecialOffer: true,
+        price: 490,
+        oldPrice: 750,
+        rating: 4.8,
+        image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-N2FcpMqCxK4YT5f7eBoXUvZpLJADWbigrjxC10Cx.jpg?raw=true"
+    },
     
 
 
