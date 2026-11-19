@@ -14,7 +14,7 @@ const products = [
         name:"Premium Ribbed High Neck Sweater" ,
         category:  "ব্যাগ ও ফ্যাশন",
         isSpecialOffer:true,
-        price: 399,
+        price: 370,
         oldPrice: 650,
         rating: 4.7,
         image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-Cv9uRwkqrSLrrCWgsnSC79Fmf90P8CrhtyuV5RDC.jpg?raw=true",
@@ -24,7 +24,7 @@ const products = [
         name: " Premium Ribbed High Neck Sweater",
         category: "ব্যাগ ও ফ্যাশন",
         isSpecialOffer: true,
-        price: 399,
+        price: 370,
         oldPrice: 650,
         rating: 4.9,
         image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-M5Twm1AAG2ddQkxeBZRjFFF8omzieqb5catEDGy1%20(1).jpg?raw=true"
@@ -230,7 +230,16 @@ const products = [
     },
 
 
-
+ {
+        id: 123,
+        name:"Gent's Sweetshirt" ,
+        category: "ব্যাগ ও ফ্যাশন",
+        isSpecialOffer: true,
+        price: 370,
+        oldPrice: 550,
+        rating: 4.8,
+        image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-77Dt30QqMDghiKzPxQkTXs73raSPSCsTh5JOdLqM.jpg?raw=true"
+    },
 
 
 
