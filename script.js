@@ -231,21 +231,45 @@ function checkoutFromCart() {
         alert('আপনার ব্যাগে কোনো প্রোডাক্ট নেই!');
         return;
     }
-    currentOrderItems = [...cart];
+    currentOrderItems = cart.map(c => ({ ...c }));
     closeModal('cartModal');
     showOrderSummary();
     openModal('orderModal');
 }
 
-function k() {
+function showOrderSummary() {
     const summaryBox = document.getElementById('orderProductSummary');
     let total = 0;
     let html = currentOrderItems.map(i => {
         total += i.price * i.qty;
-        return `<div>• ${i.name} (${i.qty}টি) - <strong>${i.price * i.qty}৳</strong></div>`;
+        const sizeText = i.selectedSize ? ` [সাইজ: ${i.selectedSize}]` : '';
+        return `<div>• ${i.name}${sizeText} (${i.qty}টি) - <strong>${i.price * i.qty}৳</strong></div>`;
     }).join('');
     html += `<hr style="margin:6px 0; border-color:#F3D1DC;"><div>সর্বমোট বিল: <strong style="color:#8B1E41;">${total}৳</strong></div>`;
     summaryBox.innerHTML = html;
+    renderSizeSelectors();
+}
+
+// সাইজ সিলেক্ট অপশন (শুধু যে প্রোডাক্টে sizes দেওয়া আছে সেগুলোর জন্য)
+function renderSizeSelectors() {
+    const box = document.getElementById('sizeSelectBox');
+    if (!box) return;
+    box.innerHTML = currentOrderItems.map((item, idx) => {
+        if (!item.sizes || item.sizes.length === 0) return '';
+        return `
+            <div style="margin:8px 0;">
+                <label>${item.name} - সাইজ নির্বাচন করুন: *</label>
+                <select onchange="setItemSize(${idx}, this.value)">
+                    <option value="">-- সাইজ বাছাই করুন --</option>
+                    ${item.sizes.map(sz => `<option value="${sz}" ${item.selectedSize === sz ? 'selected' : ''}>${sz}</option>`).join('')}
+                </select>
+            </div>`;
+    }).join('');
+}
+
+function setItemSize(idx, size) {
+    if (currentOrderItems[idx]) currentOrderItems[idx].selectedSize = size;
+    showOrderSummary();
 }
 
 // পেমেন্ট মেথড (bKash / Nagad নম্বর দেখানো)
