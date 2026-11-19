@@ -237,7 +237,7 @@ function checkoutFromCart() {
     openModal('orderModal');
 }
 
-function showOrderSummary() {
+function k() {
     const summaryBox = document.getElementById('orderProductSummary');
     let total = 0;
     let html = currentOrderItems.map(i => {
