@@ -284,6 +284,16 @@ const products = [
         image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-FXocU5osTKrJ1dYzFKqfpFY4uSzKbMDchz3DV9XG.jpg?raw=true"
     },
 
+ {
+        id: 128,
+        name: "Stylish Padding Jacket",
+        category: "ব্যাগ ও ফ্যাশন", 
+        isSpecialOffer: true,
+        price:820, 
+        oldPrice:1200, 
+        rating: 4.8,
+        image:"https://github.com/sajibs01713738150-png/Product/blob/main/001-iidHXSKDkDpcX27exzGNFN2L7d5Kz09cWRsGxn8j.jpg?raw=true"
+    },
 
 
 
